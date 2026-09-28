@@ -1,0 +1,206 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>VoxParity Record</title>
+<style>
+  :root { --bg:#101014; --card:#1a1a21; --ink:#e8e8ee; --dim:#9a9aa8; --acc:#7aa2f7;
+          --ok:#9ece6a; --bad:#f7768e; --warn:#e0af68; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink);
+         font:15px/1.5 -apple-system, "SF Pro Text", sans-serif; }
+  main { max-width:760px; margin:0 auto; padding:24px 16px 90px; }
+  h1 { font-size:18px; margin:0 0 4px; } .sub { color:var(--dim); font-size:13px; margin-bottom:18px; }
+  .card { background:var(--card); border:1px solid #2a2a33; border-radius:12px; padding:18px; margin-bottom:14px; }
+  .meta { display:flex; flex-wrap:wrap; gap:6px 14px; font-size:12.5px; color:var(--dim); margin-bottom:10px; align-items:center; }
+  .meta b { color:var(--ink); font-weight:600; }
+  .tag { padding:1px 8px; border-radius:10px; font-size:11.5px; background:#20262e; color:var(--acc); }
+  .tag.probe { background:#33301f; color:var(--warn); }
+  .pair { background:#1f2a1f; border:1px solid #2f4a2f; color:var(--ok); border-radius:8px;
+          padding:8px 12px; font-size:13px; margin-bottom:12px; }
+  .transcript { font-size:24px; line-height:1.45; margin:14px 0; }
+  .direction { color:var(--warn); font-size:14.5px; margin-bottom:16px; }
+  .direction b { color:var(--ink); }
+  .row { display:flex; flex-wrap:wrap; gap:8px; align-items:center; }
+  button { background:#22222b; color:var(--ink); border:1px solid #32323d; border-radius:8px;
+           padding:10px 16px; cursor:pointer; font-size:14.5px; }
+  button:hover:not(:disabled) { border-color:var(--acc); }
+  button:disabled { opacity:.35; cursor:default; }
+  button.rec { background:#3b1f27; border-color:var(--bad); color:var(--bad); font-weight:600; }
+  button.rec.on { background:var(--bad); color:#0d0d12; }
+  button.accept { background:var(--acc); color:#0d0d12; border:none; font-weight:600; }
+  .key { color:var(--dim); font-size:12px; margin-left:6px; }
+  canvas { width:100%; height:36px; background:#0d0d12; border:1px solid #2a2a33; border-radius:8px; margin:12px 0 4px; display:block; }
+  .clip { color:var(--bad); font-size:12.5px; min-height:18px; }
+  audio { width:100%; margin:8px 0 4px; }
+  .bar { position:fixed; bottom:0; left:0; right:0; background:#15151b; border-top:1px solid #2a2a33;
+         padding:10px 16px; display:flex; justify-content:space-between; align-items:center; font-size:13.5px; }
+  .bar .n { color:var(--acc); font-variant-numeric:tabular-nums; }
+  .bar a { color:var(--dim); cursor:pointer; text-decoration:underline; }
+  .done-note { color:var(--ok); }
+  .err { color:var(--bad); }
+  .empty { color:var(--dim); text-align:center; padding:40px 0; }
+  .redo { max-height:50vh; overflow:auto; }
+  .redo div { padding:6px 10px; border-radius:6px; cursor:pointer; font-size:13px; display:flex; justify-content:space-between; }
+  .redo div:hover { background:#22222b; }
+  .redo .d { color:var(--ok); }
+</style>
+<main>
+  <h1>VoxParity Record</h1>
+  <div class="sub">Raw voice: echo cancellation, noise suppression and auto-gain are OFF.
+    Keys: <b>R</b> record/stop, <b>space</b> play back, <b>A</b> accept &amp; next, <b>S</b> skip.</div>
+  <div id="view"></div>
+</main>
+<div class="bar">
+  <span><span class="n" id="prog"></span> <span id="msg"></span></span>
+  <a id="redo-toggle">redo list</a>
+</div>
+<script>
+let Q = [], takes = {}, pending = [], pos = 0, cur = null, redoMode = false;
+let stream, audioCtx, analyser, rec, chunks = [], blob = null, blobURL = null, recT0 = 0, durS = 0;
+const $ = s => document.querySelector(s);
+
+async function load() {
+  const r = await (await fetch('/queue')).json();
+  Q = r.entries; takes = r.takes || {};
+  pending = Q.map((e, i) => i).filter(i => !(takes[Q[i].entry_id] >= 1));
+  await initMic();
+  render();
+}
+
+async function initMic() {
+  try {
+    stream = await navigator.mediaDevices.getUserMedia({ audio: {
+      channelCount: { ideal: 1 }, sampleRate: { ideal: 48000 },
+      echoCancellation: false, noiseSuppression: false, autoGainControl: false } });
+    audioCtx = new AudioContext();
+    const src = audioCtx.createMediaStreamSource(stream);
+    analyser = audioCtx.createAnalyser(); analyser.fftSize = 2048;
+    src.connect(analyser);
+    requestAnimationFrame(meter);
+  } catch (e) {
+    $('#view').innerHTML = `<div class="card err">Microphone access failed: ${e.message}</div>`;
+  }
+}
+
+function meter() {
+  const c = $('#meter');
+  if (c && analyser) {
+    const g = c.getContext('2d'), buf = new Float32Array(analyser.fftSize);
+    analyser.getFloatTimeDomainData(buf);
+    let peak = 0, sum = 0;
+    for (const x of buf) { const a = Math.abs(x); if (a > peak) peak = a; sum += x * x; }
+    const rms = Math.sqrt(sum / buf.length);
+    c.width = c.clientWidth; c.height = 36;
+    g.fillStyle = '#0d0d12'; g.fillRect(0, 0, c.width, c.height);
+    g.fillStyle = peak > 0.9 ? '#f7768e' : (rec && rec.state === 'recording' ? '#9ece6a' : '#7aa2f7');
+    g.fillRect(0, 8, c.width * Math.min(rms * 3, 1), 8);
+    g.fillStyle = peak > 0.9 ? '#f7768e' : '#3a3a46';
+    g.fillRect(0, 22, c.width * Math.min(peak, 1), 6);
+    g.fillStyle = '#e0af68'; g.fillRect(c.width * 0.9, 4, 2, 28); // clip guide
+    const w = $('#clip'); if (w) w.textContent = peak > 0.9 ? 'CLIPPING — back off the mic or lower input gain' : '';
+  }
+  requestAnimationFrame(meter);
+}
+
+function render() {
+  const v = $('#view'); v.innerHTML = ''; blob = null; durS = 0;
+  if (blobURL) { URL.revokeObjectURL(blobURL); blobURL = null; }
+  const savedEarlier = Q.length - pending.length;
+  $('#prog').textContent = `${Math.min(pos + 1, pending.length)} of ${pending.length} (+${savedEarlier} saved earlier)`;
+  if (redoMode) { renderRedo(v); return; }
+  if (pos >= pending.length) {
+    v.innerHTML = '<div class="card empty">Queue done 🎉 — use the redo list to add takes, or Ctrl-C the server for the summary.</div>';
+    cur = null; return;
+  }
+  cur = Q[pending[pos]];
+  const card = document.createElement('div'); card.className = 'card';
+  const n = takes[cur.entry_id] || 0;
+  card.innerHTML = `
+    <div class="meta">
+      <span class="tag ${cur.kind}">${cur.cls}</span>
+      ${cur.item ? `<b>${cur.item}</b> / ${cur.variant}` : `<b>${cur.entry_id}</b>`}
+      <span>take ${n + 1}${n ? ` (${n} accepted)` : ''}</span>
+    </div>
+    ${cur.pair_note ? `<div class="pair">${cur.pair_note}</div>` : ''}
+    <div class="transcript">“${cur.transcript}”</div>
+    <div class="direction"><b>Delivery:</b> ${cur.direction}</div>
+    <canvas id="meter"></canvas>
+    <div class="clip" id="clip"></div>
+    <div id="playback"></div>
+    <div class="row">
+      <button id="b-rec" class="rec">Record<span class="key">R</span></button>
+      <button id="b-play" disabled>Play back<span class="key">space</span></button>
+      <button id="b-rerec" disabled>Re-record</button>
+      <button id="b-accept" class="accept" disabled>Accept &amp; Next<span class="key">A</span></button>
+      <button id="b-skip">Skip<span class="key">S</span></button>
+    </div>`;
+  v.appendChild(card);
+  $('#b-rec').onclick = toggleRec;
+  $('#b-play').onclick = play;
+  $('#b-rerec').onclick = () => { blob = null; setRecorded(false); $('#playback').innerHTML = ''; toggleRec(); };
+  $('#b-accept').onclick = accept;
+  $('#b-skip').onclick = () => { pos++; render(); };
+}
+
+function renderRedo(v) {
+  const card = document.createElement('div'); card.className = 'card redo';
+  Q.forEach((e, i) => {
+    const d = document.createElement('div');
+    const n = takes[e.entry_id] || 0;
+    d.innerHTML = `<span>${e.entry_id} <span class="key">${e.cls}</span></span>` +
+                  `<span class="${n ? 'd' : ''}">${n ? n + ' take' + (n > 1 ? 's' : '') : 'pending'}</span>`;
+    d.onclick = () => { redoMode = false; if (!pending.includes(i)) pending.splice(pos, 0, i); pos = pending.indexOf(i); render(); };
+    card.appendChild(d);
+  });
+  v.appendChild(card);
+}
+
+function setRecorded(on) {
+  $('#b-play').disabled = !on; $('#b-rerec').disabled = !on; $('#b-accept').disabled = !on;
+}
+
+function toggleRec() {
+  if (rec && rec.state === 'recording') { rec.stop(); return; }
+  if (!stream) return;
+  chunks = []; blob = null; setRecorded(false); $('#playback').innerHTML = '';
+  rec = new MediaRecorder(stream, { mimeType: 'audio/webm;codecs=opus' });
+  rec.ondataavailable = e => chunks.push(e.data);
+  rec.onstop = () => {
+    durS = (Date.now() - recT0) / 1000;
+    blob = new Blob(chunks, { type: 'audio/webm;codecs=opus' });
+    if (blobURL) URL.revokeObjectURL(blobURL);
+    blobURL = URL.createObjectURL(blob);
+    $('#playback').innerHTML = `<audio controls src="${blobURL}"></audio>`;
+    $('#b-rec').classList.remove('on'); $('#b-rec').innerHTML = 'Record<span class="key">R</span>';
+    setRecorded(true);
+  };
+  recT0 = Date.now(); rec.start();
+  $('#b-rec').classList.add('on'); $('#b-rec').innerHTML = 'Stop<span class="key">R</span>';
+}
+
+function play() { const a = $('#playback audio'); if (a) { a.currentTime = 0; a.play(); } }
+
+async function accept() {
+  if (!blob || !cur) return;
+  $('#b-accept').disabled = true;
+  const r = await fetch(`/upload?entry=${encodeURIComponent(cur.entry_id)}&duration=${durS.toFixed(2)}`,
+    { method: 'POST', headers: { 'Content-Type': 'audio/webm' }, body: blob });
+  const j = await r.json().catch(() => ({ ok: false, error: 'bad response' }));
+  if (!r.ok || !j.ok) {
+    $('#msg').innerHTML = `<span class="err">save failed: ${j.error || r.status}</span>`;
+    $('#b-accept').disabled = false; return;
+  }
+  takes[cur.entry_id] = j.take;
+  $('#msg').innerHTML = `<span class="done-note">saved take ${j.take} ✓</span>`;
+  pos++; render();
+}
+
+$('#redo-toggle').onclick = () => { redoMode = !redoMode; render(); };
+document.addEventListener('keydown', e => {
+  if (e.target.tagName === 'TEXTAREA' || e.target.tagName === 'INPUT' || redoMode) return;
+  if (e.key === 'r' || e.key === 'R') { e.preventDefault(); toggleRec(); }
+  else if (e.key === ' ') { e.preventDefault(); play(); }
+  else if ((e.key === 'a' || e.key === 'A') && !$('#b-accept').disabled) accept();
+  else if (e.key === 's' || e.key === 'S') { pos++; render(); }
+});
+load();
+</script>

@@ -1,0 +1,26 @@
+{
+  "id": "real:realbeds/traffic",
+  "class": "traffic",
+  "source": "DEMAND",
+  "source_url": "https://zenodo.org/records/1227121",
+  "download_url": "https://zenodo.org/api/records/1227121/files/STRAFFIC_16k.zip/content",
+  "original_sha256": "2df9b444afb3b789df92d96cb6f58a50653cdbbbe7e7e74fcd9de2af6385fbea",
+  "license": "CC-BY-4.0",
+  "license_proof_url": "https://zenodo.org/records/1227121",
+  "license_note": "RESOLVED by D095 (Bhavik, Sep 13): the Zenodo record-level CC-BY-4.0 governs. Historical note: DEMAND.pdf inside the record states CC-BY-SA-3.0; the 2018 Zenodo upload's structured license field is treated as the authors' relicense.",
+  "attribution": "DEMAND: J. Thiemann, N. Ito, E. Vincent, 'DEMAND: a collection of multi-channel recordings of acoustic noise in diverse environments' (scene STRAFFIC, ch01), Zenodo, https://doi.org/10.5281/zenodo.1227121. Licensed CC BY 4.0.",
+  "convert": [
+    "python3",
+    "-c",
+    "import sys,zipfile,tempfile,subprocess; zp,member,out=sys.argv[1],sys.argv[2],sys.argv[3]; d=tempfile.mkdtemp(); p=zipfile.ZipFile(zp).extract(member,d); subprocess.run(['ffmpeg','-y','-hide_banner','-loglevel','error','-i',p,'-ac','1','-ar','24000','-sample_fmt','s16',out],check=True)",
+    "{in}",
+    "STRAFFIC/ch01.wav",
+    "{out}"
+  ],
+  "excerpt": {
+    "offset_s": 165.0,
+    "duration_s": 60.0
+  },
+  "converted_sha256": "94d895c8fb8a4ac35eab99bb10ef238e32bcb748de134aa360e537feadf7f90b",
+  "cache_path": "stimuli/assets-cache/realbeds/traffic.wav"
+}

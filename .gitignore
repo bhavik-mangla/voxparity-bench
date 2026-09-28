@@ -1,0 +1,53 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+dist/
+build/
+
+# Tooling caches
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+
+# Audio stimuli are content-addressed and NOT stored in git (manifests are).
+stimuli/*
+!stimuli/manifest.yaml
+*.wav
+*.mp3
+*.flac
+*.ogg
+
+# Local runs and secrets
+runs/
+.env
+*.local.yaml
+
+# OS
+.DS_Store
+models/
+.playwright-mcp/
+ia.html
+stimuli/manifest.lock
+.claude/worktrees/
+
+# real: asset packs (D062 pack contract): recipes are committed, audio is not.
+# The negations re-include stimuli/packs/ out of the stimuli/* blanket above;
+# the cache line keeps fetched recordings (possibly license-barred) out of git.
+!stimuli/packs/
+!stimuli/packs/**
+stimuli/packs/**/*.wav
+stimuli/assets-cache/
+
+# Game bundle (export-web output: gold-bearing items.json + clips) — never served statically
+web/data/
+
+# Materialized frozen ready subsets (rebuild with `voxparity items freeze-check --copy-ready`)
+freeze/*/ready-*/
+freeze/*/run-*/
+
+# Public release: the development-split bundle lives in data/ and is tracked
+# there (audio and run records included), despite the rules above.
+!data/
+!data/**

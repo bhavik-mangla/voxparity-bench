@@ -1,0 +1,25 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+      - name: Sync
+        # Not --all-extras: `local` (mlx-audio>=0.5.3) and `duplex` (moshi-mlx)
+        # are declared uv conflicts and cannot share one environment.
+        run: uv sync --extra dev --extra local --extra paper
+      - name: Lint
+        run: uv run ruff check . && uv run ruff format --check .
+      - name: Types
+        run: uv run mypy
+      - name: Tests
+        run: uv run pytest
+      - name: Validate items
+        run: uv run voxparity items validate items/
