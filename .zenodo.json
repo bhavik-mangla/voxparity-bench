@@ -17,5 +17,12 @@
     "tool calling",
     "evaluation"
   ],
-  "access_right": "open"
+  "access_right": "open",
+  "related_identifiers": [
+    {
+      "identifier": "arXiv:2609.35922",
+      "relation": "isSupplementTo",
+      "resource_type": "publication-preprint"
+    }
+  ]
 }

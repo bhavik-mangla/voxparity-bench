@@ -29,4 +29,6 @@ preferred-citation:
     - family-names: Mangla
       given-names: Bhavik
   year: 2026
-  journal: "arXiv preprint"
+  journal: "arXiv preprint arXiv:2609.35922"
+  url: "https://arxiv.org/abs/2609.35922"
+  doi: "10.48550/arXiv.2609.35922"
