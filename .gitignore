@@ -51,3 +51,7 @@ freeze/*/run-*/
 # there (audio and run records included), despite the rules above.
 !data/
 !data/**
+
+# Outreach social cards and crops: generated locally by docs/outreach/img/make_cards.py
+# (and ffmpeg); never committed.
+docs/outreach/img/*.png
