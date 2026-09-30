@@ -97,3 +97,24 @@ eye.
    GitHub release archives code and data together and mints one DOI from
    `.zenodo.json`. `zenodo-dataset.json` is kept only for a separate data
    record, which this release does not use.
+
+## Results table and leaderboard page
+
+`leaderboard.py` generates the README's results section (between the
+`leaderboard:start`/`leaderboard:end` markers in `release/README.md`) and the
+static leaderboard page `docs/index.html` + `docs/leaderboard.json` +
+`docs/.nojekyll`, all from the aggregate result files that ship
+(`docs/results/final/paper_leaderboard.json`, `docs/insights/notefull.json`,
+`docs/insights/final-analyses.json`). No number is typed by hand.
+
+```bash
+uv run python scripts/release/leaderboard.py           # regenerate
+uv run python scripts/release/leaderboard.py --check   # stale output or != Table A2 fails
+```
+
+`--check` and `tests/test_release_leaderboard.py` also compare every cell with
+the paper's Table A2 when `paper/arxiv/` is present. Run it before an export
+whenever the result files, the README template or the page template
+(`leaderboard_page.html`) change. The page makes no external request (no fonts,
+scripts, trackers or cookies). It is served by GitHub Pages from the public
+repository: Settings → Pages → Deploy from a branch → `main`, folder `/docs`.
