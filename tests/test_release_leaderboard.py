@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import copy
 import importlib.util
+import re
 from pathlib import Path
 
 import pytest
@@ -32,9 +33,29 @@ def test_counts_match_paper() -> None:
 
 
 def test_page_has_no_external_requests() -> None:
+    docs = ROOT / "docs"
+    page = (docs / "index.html").read_text()
+    # Scripts and stylesheets are local files only; no fonts, analytics or CDNs.
+    tag = r"<(?:script|link|img|audio|source|iframe)\b[^>]*\b(?:src|href)"
+    refs = re.findall(tag + r'="([^"]+)"', page)
+    assert refs and all(not re.match(r"[a-z]+:|//", u) for u in refs), refs
+    for name in ("index.html", "app.js", "style.css"):
+        text = (docs / name).read_text()
+        assert "@import" not in text and "document.cookie" not in text, name
+        assert not re.search(r"url\(\s*['\"]?(https?:)?//", text), name
+        assert "fetch(" not in text and "XMLHttpRequest" not in text, name
+    for src in re.findall(r'data-src="([^"]+)"', page):
+        assert (docs / src).exists(), src
+
+
+def test_page_assets_and_captions() -> None:
+    assert lb.check_audio_sources(ROOT) == []
     page = (ROOT / lb.PAGE).read_text()
-    assert "<script src" not in page and "<link" not in page and "@import" not in page
-    assert "document.cookie" not in page and "localStorage" not in page
+    assert "@@" not in page
+    assert page.count(f'content="{lb.OG_IMAGE}"') == 2
+    assert "huggingface.co/spaces/bhavikmangla/voxparity-leaderboard" in page
+    for cap in lb.pair_captions(lb.pair_counts(ROOT)).values():
+        assert cap in page
 
 
 A2 = ROOT / lb.TABLE_A2
