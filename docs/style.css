@@ -233,3 +233,397 @@ td .v{font-weight:600}
 
 .stats>div:last-child{grid-column:1/-1}
 @media(min-width:820px){.stats>div:last-child{grid-column:auto}}
+
+/* ---- compact top (Oct 2): smaller hero, stat list, playable pair beside it ---- */
+.hero{padding:22px 16px 18px}
+@media(min-width:720px){.hero{padding:26px 32px 18px}}
+h1{font:600 clamp(24px,3.3vw,34px)/1.15 var(--serif);margin:0 0 12px;letter-spacing:-.01em;max-width:none}
+.hero-grid{display:grid;gap:16px}
+@media(min-width:880px){.hero-grid{grid-template-columns:minmax(0,1fr) 400px;gap:28px;align-items:start}}
+.lede{font-size:17px;line-height:1.45;color:var(--ink);max-width:60ch;margin:0 0 4px}
+.lede-sub{font-size:14px;line-height:1.5;color:var(--ink2);max-width:66ch;margin:0 0 12px}
+.actions{gap:8px;margin-bottom:14px}
+.btn{padding:4px 12px;font-size:13.5px}
+.stats{display:block;background:none;border:0;border-radius:0;overflow:visible}
+.stats>div{display:grid;grid-template-columns:96px minmax(0,1fr);column-gap:12px;align-items:baseline;background:none;padding:7px 0;border-top:1px solid var(--rule)}
+.stats>div:last-child{border-bottom:1px solid var(--rule)}
+.stats>div.hi{background:none}
+.stats dd{grid-column:1;grid-row:1 / span 2;margin:0;font:600 24px/1.15 var(--serif);white-space:nowrap}
+.stats dd small{font-size:15px}
+.stats dt{grid-column:2;grid-row:1;margin:0;font-size:14px;line-height:1.35;color:var(--ink);font-weight:500}
+.stats>div>span{grid-column:2;grid-row:2;font-size:12.5px;line-height:1.35;color:var(--muted)}
+.meta{font-size:12.5px;margin:12px 0 0}
+.mini{background:var(--surface);border:1px solid var(--rule);border-radius:12px;padding:12px 14px}
+.mini-k{font:600 12px var(--sans);text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:0 0 6px}
+.mini .t{font:15px/1.4 var(--serif);margin:0 0 8px}
+.mini .var{padding:6px 10px;margin-bottom:6px;gap:10px}
+.mini .var b{font-size:13.5px}
+.mini .var code{font-size:12.5px}
+.mini .play{width:32px;height:32px;font-size:12px}
+.mini .res{font-size:13px;line-height:1.45;margin:8px 0 4px}
+.mini .res b{color:var(--ink);font-weight:600}
+.more{font-size:13px;text-decoration:none}
+.more:hover{text-decoration:underline}
+.pairs-k{color:var(--ink2);font-size:14px;margin:0 0 10px}
+@media(min-width:820px){.pairs>.pair:last-child:nth-child(odd){grid-column:1/-1}}
+#leaderboard{padding-top:26px}
+#leaderboard h2{font-size:clamp(21px,2.4vw,26px);margin-bottom:8px}
+.howto{padding:8px 12px;margin:0 0 12px;border-radius:8px}
+.howto p{font-size:14px}
+.howto .pass-word{color:var(--accent)}
+.howto details{margin-top:2px}
+.howto summary{cursor:pointer;font-size:13px;color:var(--accent);width:max-content;max-width:100%}
+.howto details p{margin-top:6px;font-size:13.5px}
+@media(max-width:640px){.stats dd{font-size:22px}}
+.stats{display:grid;grid-template-columns:max-content minmax(0,1fr);column-gap:14px}
+.stats>div{grid-column:1 / -1;grid-template-columns:subgrid;column-gap:14px}
+.mini .var>div{display:flex;flex-wrap:wrap;align-items:baseline;gap:0 10px}
+.mini .var b{display:inline}
+.stats>div:last-child{grid-column:1 / -1}
+
+/* ---- diagram at the top (Oct 2): one content width, playable diagram in the hero ---- */
+.wrap,#leaderboard>.wrap{max-width:1280px}
+.hero{padding-bottom:16px}
+h1{margin-bottom:6px}
+.lede{font:600 clamp(17px,1.9vw,20px)/1.3 var(--serif);color:var(--ink2);margin:0 0 4px;max-width:none}
+.lede-sub{max-width:100ch;margin-bottom:10px}
+.actions{margin-bottom:14px}
+.hero-grid{display:grid;gap:14px}
+@media(min-width:960px){.hero-grid{grid-template-columns:minmax(0,1fr) 340px;gap:28px;align-items:start}}
+.stats>div:first-child{border-top:0}
+@media(min-width:960px){.stats{margin-top:20px}.stats>div:first-child{border-top:1px solid var(--rule)}}
+.xdiag{margin:0;background:var(--surface);border:1px solid var(--rule);border-radius:12px;padding:12px 14px 10px}
+.xd-grid{display:grid;grid-template-columns:minmax(0,.95fr) 32px minmax(0,1.4fr) 22px minmax(0,.85fr);
+  grid-template-rows:minmax(60px,auto) minmax(60px,auto);grid-template-areas:"tr fk va a1 ga" "tr fk vb a2 gb";column-gap:0;row-gap:8px;align-items:stretch}
+.xd-box{background:var(--bg);border:1px solid var(--rule);border-radius:10px;padding:7px 10px;min-width:0}
+.xd-box.cue{border-color:var(--accent);border-width:1.5px;background:var(--accent-soft)}
+.xd-k{display:block;font:500 10.5px var(--mono);color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.xd-ab{display:none}
+.xd-tr{grid-area:tr;align-self:center}
+.xd-q{display:block;font:14.5px/1.4 var(--serif);color:var(--ink);margin-top:2px}
+.xd-fork{grid-area:fk;width:100%;height:100%;display:block}
+.xd-fork path{fill:none;stroke:var(--muted);stroke-width:1.4;vector-effect:non-scaling-stroke}
+.xd-va{grid-area:va}.xd-vb{grid-area:vb}.xd-ga{grid-area:ga}.xd-gb{grid-area:gb}
+.xd-var{display:flex;align-items:center;gap:10px;padding:6px 10px}
+.xd-var .play{width:34px;height:34px;font-size:12px}
+.xd-vt{flex:1;min-width:0}
+.xd-vt b{display:block;font-size:13px;font-weight:600;line-height:1.25}
+.xd-wave{display:block;width:100%;height:22px;margin-top:3px}
+.xd-wave rect{fill:var(--muted);opacity:.55}
+.xd-vb .xd-wave rect{fill:var(--accent)}
+.xd-wave rect.p{opacity:1;fill:var(--ink)}
+.xd-vb .xd-wave rect.p{fill:var(--accent);opacity:1}
+.xd-vb .xd-wave rect:not(.p){opacity:.4}
+.xd-arr{align-self:center;justify-self:center;color:var(--muted);font-size:15px}
+.xd-a1{grid-area:a1}.xd-a2{grid-area:a2}
+.xd-gold{display:flex;flex-direction:column;justify-content:center}
+.xd-gold code{font:600 13.5px var(--mono);color:var(--ink);overflow-wrap:anywhere}
+.xd-gold.cue code{color:var(--accent)}
+.xdiag .res{font-size:13.5px;line-height:1.45;margin:10px 0 2px;color:var(--ink2)}
+.xdiag .res b{color:var(--ink);font-weight:600}
+.xdiag .more{white-space:nowrap}
+.xdiag figcaption{font-size:12px;color:var(--muted)}
+@media(max-width:700px){
+  .xd-grid{grid-template-columns:minmax(0,1fr);grid-template-rows:none;row-gap:6px;
+    grid-template-areas:"tr" "va" "vb" "ga" "gb"}
+  .xd-fork,.xd-arr{display:none}
+  .xd-va,.xd-ga{margin-top:6px}
+  .xd-var{min-height:56px}
+  .xd-ab{display:inline}
+  .xd-gold{flex-direction:row;justify-content:flex-start;align-items:baseline;gap:10px}
+}
+
+/* ---- More examples (Oct 2): seven compact pair cards with cue-kind tags ---- */
+.pairs.compact{gap:12px}
+@media(min-width:760px){.pairs.compact{grid-template-columns:1fr 1fr}}
+@media(min-width:820px){.pairs.compact>.pair:last-child:nth-child(odd){grid-column:auto}}
+.pairs.compact .pair{padding:12px 14px;border-radius:12px;display:flex;flex-direction:column}
+.pairs.compact .pair header{display:flex;flex-wrap:wrap;align-items:center;gap:4px 10px;margin:0 0 4px}
+.pairs.compact .pair h3{font:600 15px/1.3 var(--sans);margin:0;color:var(--ink)}
+.tag{display:inline-block;font:500 11px/1.5 var(--mono);text-transform:uppercase;letter-spacing:.05em;color:var(--accent);background:var(--accent-soft);border:1px solid color-mix(in srgb,var(--accent) 35%,var(--rule));border-radius:999px;padding:0 8px}
+.pairs.compact .pair .t{font:14.5px/1.4 var(--serif);margin:0 0 8px}
+.pairs.compact .var{padding:5px 10px;gap:10px;margin-bottom:6px;border-radius:8px}
+.pairs.compact .var>div{display:flex;flex-wrap:wrap;align-items:baseline;gap:0 10px;min-width:0}
+.pairs.compact .var b{display:inline;font-size:13.5px;font-weight:600}
+.pairs.compact .var code{font-size:12.5px;overflow-wrap:anywhere}
+.pairs.compact .play{width:30px;height:30px;font-size:11px}
+.pairs.compact .res{font-size:13px;line-height:1.45;margin:4px 0 0}
+
+/* ---- hero title line (Oct 2): one small line above the diagram replaces the subtitle and the numbered column labels ---- */
+.xd-title{margin:0 0 -6px;font:600 18px/1.3 var(--serif);color:var(--ink)}
+@media(min-width:960px){
+  .hero-grid{grid-template-areas:"ttl ." "fig st";row-gap:8px}
+  .xd-title{grid-area:ttl;margin:0}
+  .hero-grid>.xdiag{grid-area:fig}
+  .hero-grid>.stats{grid-area:st;margin-top:0}
+}
+
+/* ---- readability pass (Oct 2): AA contrast, type floor, prose measure, tap targets, spacing scale ---- */
+/* Text colours that failed WCAG AA: muted 3.2-3.5:1 -> >=4.6:1; accent text 3.8-4.3:1 -> >=4.8:1; warn 2.8-3.1:1 -> >=4.5:1 */
+:root{--muted:#666560;--accent:#1d63bb;--warn:#b9461a}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--muted:#9c9a93;--accent:#5a9cf0;--warn:#ec7a4b}}
+:root[data-theme="dark"]{--muted:#9c9a93;--accent:#5a9cf0;--warn:#ec7a4b}
+/* spacing scale: 4 8 12 16 24 32 48 */
+section{padding:48px 0}
+#leaderboard{padding-top:40px}
+h2{margin-bottom:12px}
+/* measure: ~65-85 characters per line for prose (system sans averages ~0.45em per character) */
+.lede-sub,.sub,.gloss dd,.refs dd,.howto,.note,.fn,.finding figcaption,.xdiag .res,.xdiag figcaption{max-width:38em}
+.finding .ftext p{max-width:62ch}
+/* hero */
+.hero{padding:32px 16px 32px}
+@media(min-width:720px){.hero{padding:36px 32px 36px}}
+h1{margin-bottom:12px}
+.lede-sub{font-size:16px;line-height:1.55;margin-bottom:16px}
+.actions{margin-bottom:28px}
+.btn{padding:7px 16px;font-size:15px}
+.xd-title{font-size:19px}
+.xd-k{font-size:11.5px}
+.xd-q{font-size:15.5px;line-height:1.45}
+.xd-vt b{font-size:14px;line-height:1.35}
+.xd-gold code{font-size:14px}
+.xdiag{padding:14px 16px 12px}
+.xdiag .res{font-size:15px;line-height:1.5;margin-top:12px}
+.xdiag figcaption{font-size:13px;line-height:1.5;margin-top:6px}
+.stats>div{padding:10px 0}
+.stats dt{font-size:15px;line-height:1.4}
+.stats>div>span{font-size:13.5px;line-height:1.45}
+.meta{font-size:13px;margin-top:20px}
+/* leaderboard */
+.howto{padding:12px 16px;margin-bottom:16px}
+.howto p{font-size:15px;line-height:1.55}
+.howto summary{font-size:14px;padding:4px 0}
+.howto details p{font-size:14.5px;line-height:1.55}
+.controls{gap:10px;margin-bottom:16px}
+.seg{font-size:15px;padding:7px 16px}
+.filter{font-size:15px}
+.filter select{padding:5px 8px}
+table{font-size:14.5px}
+#leaderboard th,#leaderboard td{padding:10px 9px}
+#leaderboard .c-verdict{padding-left:6px;padding-right:6px}
+th{font-size:13.5px}
+th small{font-size:12px;line-height:1.35}
+table caption{font-size:14px;padding:12px 12px 4px}
+.ci{font-size:13px}
+.vd{font-size:13px;padding:2px 9px;white-space:nowrap;display:inline-block;line-height:1.5}
+td.c-name sup a{font-size:12px}
+.legend{font-size:14px;gap:8px 20px;margin:12px 0 16px}
+.swipe{font-size:13.5px}
+.fn{font-size:14.5px;line-height:1.55;margin-bottom:28px}
+.fn li{margin:6px 0}
+.refs h3{font-size:19px;margin:8px 0 4px}
+.refs dt{font-size:15.5px;margin-top:16px}
+.refs dd{font-size:15px;line-height:1.55;margin-top:4px}
+.linkbtn{padding:2px 0}
+.tsub{margin:32px 0 6px}
+#lbTable .note{color:var(--ink2);font-size:15px;line-height:1.55}
+/* examples */
+.pairs.compact{gap:16px}
+.pairs.compact .pair{padding:16px 18px}
+.pairs.compact .pair header{margin-bottom:8px}
+.pairs.compact .pair h3{font-size:16px}
+.tag{font-size:12px;padding:1px 9px}
+.pairs.compact .pair .t{font-size:16px;line-height:1.45;margin-bottom:12px}
+.pairs.compact .var{padding:6px 12px;margin-bottom:8px}
+.pairs.compact .var b{font-size:14.5px}
+.pairs.compact .var code{font-size:13.5px}
+.pairs.compact .play{width:36px;height:36px;font-size:12px}
+.pairs.compact .res{font-size:14.5px;line-height:1.55;margin-top:8px}
+.note{font-size:14.5px;line-height:1.55}
+/* findings, glossary, code */
+.finding{padding:32px 0}
+.fnum{font-size:13px;margin-bottom:8px}
+.finding h3{margin-bottom:12px}
+.finding figcaption{font-size:14px;line-height:1.55;margin-top:10px}
+.c-axis{font-size:12px}
+.c-lab-ref,#errChart .c-axis{paint-order:stroke;stroke:var(--surface);stroke-width:4px;stroke-linejoin:round}
+.gloss{gap:0 32px}
+.gloss dt,.gloss dd{padding-top:14px;padding-bottom:4px}
+.gloss dt span{font-size:13px;margin-top:2px}
+.gloss dd{line-height:1.6}
+.code pre{font-size:13.5px}
+.copy{font-size:13px;padding:5px 10px}
+.foot{font-size:14px}
+/* mobile: tap targets >=40px, no clipped nav item */
+@media(max-width:640px){
+  .top nav a{padding:10px 0}
+  .theme-btn{width:40px;height:40px}
+  .btn{padding:10px 16px}
+  .seg{padding:10px 16px}
+  .filter select{min-height:40px}
+  .howto summary{padding:9px 0}
+  .xd-var .play,.pairs.compact .play{width:40px;height:40px}
+  .copy{padding:10px 12px;min-height:40px}
+  .seg{min-height:40px}
+  .brand{padding:8px 0}
+  .linkbtn{padding:9px 0;display:inline-block}
+  #leaderboard th,#leaderboard td{padding:10px 8px}
+  .stats dd{font-size:24px}
+}
+@media(max-width:440px){.top nav a:nth-child(n+3){display:none}}
+.nw,.xd-k{white-space:nowrap}
+@media(max-width:700px){.xd-gold code{min-width:0}}
+
+/* ---- layout fixes (Oct 2, final): full-width how-to, aligned tables, notes beside reference rows ---- */
+.howto{max-width:none}
+.howto details p{max-width:80ch}
+#lbTable .note.tnote{max-width:none;margin:0 0 12px}
+/* both leaderboard tables share one column grid, so the audio-only rows line up with the main table */
+@media(min-width:1100px){
+  #lbTable table{table-layout:fixed}
+  #lbTable th{white-space:normal}
+  #lbTable th small{white-space:normal}
+  #lbTable th.c-name{width:20%}
+  #lbTable th.c-vendor{width:11.5%}
+  #lbTable th.c-mode{width:6.5%}
+  #lbTable th.c-credit{width:16%}
+  #lbTable th.c-verdict{width:12%}
+  #lbTable th.c-gain{width:13%}
+  #lbTable th.c-p{width:6%}
+  #lbTable th.c-probe{width:11%}
+  #lbTable th.c-both{width:10%}
+}
+.after-tables{display:grid;gap:8px 48px;margin-top:8px}
+.after-tables .fn{margin:0;max-width:none}
+.after-tables .fn-col{min-width:0}
+.after-tables .refs{min-width:0}
+.after-tables .refs h3{margin-top:0}
+.after-tables .refs dt:first-of-type{margin-top:4px}
+.after-tables .refs dd{max-width:none}
+#refTable th{white-space:normal}
+@media(min-width:960px){
+  .after-tables{grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:start}
+  .after-tables .fn{padding-right:0}
+}
+.fn-h{font:600 19px var(--serif);margin:0 0 4px}
+/* hero: one-line scenario label under the diagram */
+.xdiag figcaption.xd-scn{font-size:14px;line-height:1.5;color:var(--ink2);margin-top:10px;max-width:none}
+
+/* ---- layout tightening (Oct 2, title A): text + stats side by side, diagram full width, one-line how-to ---- */
+.hero{padding:28px 16px 24px}
+@media(min-width:720px){.hero{padding:32px 32px 24px}}
+.hero-head{display:grid;gap:20px}
+@media(min-width:960px){.hero-head{grid-template-columns:minmax(0,1fr) 430px;gap:40px;align-items:start}}
+.kicker{font:600 13px/1.4 var(--sans);text-transform:uppercase;letter-spacing:.08em;color:var(--accent);margin:0 0 6px}
+h1{font:600 clamp(30px,3.1vw,40px)/1.12 var(--serif);margin:0 0 8px;letter-spacing:-.015em;max-width:none}
+.subtitle{font:500 clamp(17px,1.7vw,20px)/1.4 var(--serif);color:var(--ink2);margin:0 0 12px}
+.lede-sub{font-size:16px;line-height:1.55;color:var(--ink2);max-width:none;margin:0 0 16px}
+.actions{margin-bottom:0}
+.hero-head .stats{margin:0}
+@media(min-width:960px){.hero-head .stats{margin-top:4px}.hero-head .stats>div:first-child{border-top:1px solid var(--rule)}}
+.hero-head .stats>div{padding:7px 0}
+.hero-diag{margin-top:24px}
+.hero-diag .xd-title{margin:0 0 8px}
+.meta{margin-top:12px}
+/* how-to: key line and the "How to read" toggle share one line; the expanded text opens below */
+.howto{position:relative}
+.howto details{margin-top:0}
+.howto summary{color:var(--accent)}
+@media(min-width:900px){
+  .howto{padding:8px 16px;padding-right:220px}
+  .howto summary{position:absolute;right:16px;top:8px;padding:0;line-height:1.55;font-size:15px}
+  .howto details[open] p{margin-top:8px}
+}
+/* tables have no visible caption now (aria-label carries it) */
+#leaderboard .controls{margin-bottom:12px}
+.tsub{margin:24px 0 4px}
+
+/* ---- type scale (Oct 2): six sizes, two weights, three families with fixed roles ----
+   sizes  40 H1 (clamp 30-40) | 26 H2 + stat numbers | 19 H3 + subtitle + brand | 16 body prose | 14 secondary/UI/tables/code | 12.5 labels, intervals, chart text
+   weights 400 text, 600 headings/emphasis
+   serif = H1, H2, H3 headings, transcripts, brand; mono = tool names and code only; sans = everything else */
+:root{--fs-h1:clamp(30px,3.1vw,40px);--fs-h2:clamp(22px,2.6vw,26px);--fs-h3:19px;--fs-body:16px;--fs-sm:14px;--fs-xs:12.5px}
+body{font-size:var(--fs-body)}
+code{font-size:var(--fs-sm)}
+h1{font-size:var(--fs-h1);font-weight:600}
+h2,#leaderboard h2{font:600 var(--fs-h2)/1.2 var(--serif)}
+.finding h3,.refs h3,.fn-h,.tsub,.xd-title,.hero-diag .xd-title{font:600 var(--fs-h3)/1.3 var(--serif)}
+.brand{font:600 var(--fs-h3) var(--serif)}
+.subtitle{font:400 var(--fs-h3)/1.4 var(--sans);color:var(--ink2)}
+.kicker,.fnum,.xd-k,.tag,.gloss dt span{font:600 var(--fs-xs)/1.5 var(--sans);text-transform:uppercase;letter-spacing:.06em}
+.kicker{color:var(--accent)}
+.fnum,.xd-k,.gloss dt span{color:var(--muted)}
+.gloss dt span{text-transform:none;letter-spacing:0;font-weight:400}
+.stats dd,.hero-head .stats dd{font:600 var(--fs-h2)/1.15 var(--sans);font-variant-numeric:tabular-nums}
+.stats dd small{font-size:var(--fs-sm);font-weight:400}
+.stats dt{font-size:var(--fs-body);font-weight:600}
+.stats>div>span{font-size:var(--fs-sm)}
+.lede-sub,.sub,.finding p,.gloss dd,.refs dd,.howto p,.xd-q,.pair .t,.pairs.compact .pair .t{font-size:var(--fs-body)}
+.refs dt,.gloss dt,.pairs.compact .pair h3{font-size:var(--fs-body);font-weight:600}
+.note,.fn,.res,.pairs.compact .res,.xdiag .res,.xdiag figcaption,.xdiag figcaption.xd-scn,.finding figcaption,.legend,.meta,.foot,.swipe,.howto details p,#lbTable .note,
+.btn,.seg,.filter,.copy,.top nav a,.howto summary,.var b,.pairs.compact .var b,.xd-vt b,.var code,.pairs.compact .var code,.xd-gold code,.code pre,table,th,.tip{font-size:var(--fs-sm)}
+th small,.ci,.vd,td.c-name sup a,.more{font-size:var(--fs-xs)}
+.xdiag figcaption .more{font-size:inherit}
+td.c-name{font-weight:600}
+.c-axis,.c-lab,.c-lab-ref,.c-val,.c-head,.c-tag,.c-fn{font-size:var(--fs-xs);font-family:var(--sans)}
+.c-tag{fill:var(--muted)}
+/* one meaning per symbol: the disclosure toggle uses +/- (play/pause triangles are for audio only) */
+.howto summary{list-style:none}
+.howto summary::-webkit-details-marker{display:none}
+.howto summary::before{content:"+";display:inline-block;width:1em;font-weight:600}
+.howto details[open] summary::before{content:"\2212"}
+b,strong,.fn .fname{font-weight:600}
+.finding .fnum{font:600 var(--fs-xs)/1.5 var(--sans);text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.play,.xd-var .play,.pairs.compact .play,.mini .play{font-size:var(--fs-xs)}
+.theme-btn,.xd-arr{font-size:var(--fs-sm)}
+td.c-name sup{line-height:0}
+@media(min-width:900px){.finding{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:40px;padding:24px 0}}
+
+/* ---- polish (Oct 2): three hero levels, breathing room on the 4-8-12-16-24-32-48 scale, compact table headers ----
+   tier 3 moves 19 -> 20px so the subtitle can sit one clear step below the H1 without a seventh size */
+:root{--fs-h3:20px}
+/* hero: kicker -> H1 -> subtitle (sans 600, full ink) -> lede (16px, muted, more air above) */
+.hero{padding:40px 16px 24px}
+@media(min-width:720px){.hero{padding:40px 32px 24px}}
+.kicker{margin:0 0 8px}
+h1{margin:0 0 12px}
+.subtitle{font:600 var(--fs-h3)/1.4 var(--sans);color:var(--ink);margin:0 0 16px;max-width:36em}
+.lede-sub{color:var(--ink2);max-width:36em;margin:0 0 24px}
+.hero-head{row-gap:32px}
+@media(min-width:960px){
+  .hero-head .stats{margin-top:0}
+}
+.hero-head .stats>div{padding:12px 0}
+.hero-head .stats dt{margin-top:4px}
+.hero-diag{margin-top:32px}
+.meta{margin-top:16px}
+/* hero diagram: scenario line sits under the gold column */
+@media(min-width:701px){.xdiag figcaption.xd-scn{text-align:right}}
+/* leaderboard: heading / how-to / controls on the scale; controls sit 12px above the table */
+#leaderboard h2{margin-bottom:16px}
+.howto{margin-bottom:24px}
+#leaderboard .controls{margin-bottom:12px}
+#lbTable th{vertical-align:bottom;padding-top:8px;padding-bottom:8px}
+#lbTable th small{margin-top:2px}
+@media(min-width:1100px){
+  #lbTable th.c-probe{width:11.5%}
+  #lbTable th.c-name{width:22%}
+  #lbTable th.c-vendor{width:12%}
+  #lbTable th.c-credit{width:17%}
+  #lbTable th.c-gain{width:14%}
+  #lbTable th.c-both{width:11.5%}
+}
+/* the fixed grid needs the full 1216px table; narrower desktops size columns to content (the wrap scrolls if needed) */
+@media(min-width:1100px) and (max-width:1279px){
+  #lbTable table{table-layout:auto}
+  #lbTable th[class]{width:auto}
+  #lbTable th,#lbTable th small{white-space:nowrap}
+}
+/* end of the tables -> notes and reference rows: a clear break */
+.legend{margin-bottom:0}
+.after-tables{margin-top:40px;padding-top:32px;border-top:1px solid var(--rule)}
+
+/* verdict inline (no pill column): blue = passes, orange = significantly below; slim bar on the row's left edge.
+   The verdict is also in visually hidden text in the name cell. */
+.sr{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+#lbTable td.c-name{position:relative}
+#lbTable tr.is-pass td.c-name,#lbTable tr.is-pass td.c-gain .v{color:var(--accent);font-weight:600}
+#lbTable tr.is-below td.c-name,#lbTable tr.is-below td.c-gain .v{color:var(--warn);font-weight:600}
+#lbTable tr.is-pass td.c-name{box-shadow:inset 3px 0 0 var(--accent)}
+#lbTable tr.is-below td.c-name{box-shadow:inset 3px 0 0 var(--warn)}
+#lbTable td.c-name,#lbTable th.c-name{padding-left:14px}
+/* table view: legend swatches match the row bars; chart view keeps the plot's dot / triangle */
+body:not(.view-chart) .legend .lg.pass,body:not(.view-chart) .legend .lg.below{width:12px;height:12px;border:0;border-radius:2px;vertical-align:-1px;margin-right:8px}
+body:not(.view-chart) .legend .lg.pass{background:var(--accent)}
+body:not(.view-chart) .legend .lg.below{background:var(--warn)}
+body:not(.view-chart) .legend .lg-ns{display:none}

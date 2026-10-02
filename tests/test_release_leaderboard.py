@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import copy
 import importlib.util
+import json
 import re
 from pathlib import Path
 
@@ -54,8 +55,40 @@ def test_page_assets_and_captions() -> None:
     assert "@@" not in page
     assert page.count(f'content="{lb.OG_IMAGE}"') == 2
     assert "huggingface.co/spaces/bhavikmangla/voxparity-leaderboard" in page
-    for cap in lb.pair_captions(lb.pair_counts(ROOT)).values():
-        assert cap in page
+    caps = lb.pair_captions(lb.pair_counts(ROOT))
+    names = ("FRDCB", "REFILL", "CARSVC", "BNKGR", "DRIVE", "ALARMC", "BETPHN", "SEELON")
+    assert set(caps) == {f"PAIR_{k}" for k in names}
+    for cap in caps.values():
+        assert page.count(lb.ascii_html(cap)) == 1
+        assert "counts from the public dev-split records" not in cap
+    assert caps["PAIR_FRDCB"].startswith("Of the 28 systems, 24 release the deposit")
+    assert "13 still release it and 9 hold it" in caps["PAIR_FRDCB"]
+    # Eight cards, the credit-union pair first; the hero diagram carries no result line.
+    items = re.findall(r'<article class="pair" data-item="([^"]+)"', page)
+    assert items == list(lb.PAIR_ITEMS)
+    hero = page[page.index('<figure class="xdiag"') : page.index("</figure>")]
+    assert 'class="res"' not in hero and 'href="#pairs"' in hero
+    # Credit-union clips play in the hero and on their card; every other clip once.
+    srcs = re.findall(r'data-src="audio/([^"]+)"', page)
+    sources = json.loads((ROOT / lb.AUDIO_SOURCES).read_text())
+    assert len(srcs) == 18 and set(srcs) == set(sources) and len(sources) == 16
+    assert all(srcs.count(s) == (2 if s.startswith("frdcb") else 1) for s in set(srcs))
+    # Findings come before the examples, in the page and in the nav.
+    assert page.index('<section id="findings"') < page.index('<section id="how"')
+    assert page.index('href="#findings"') < page.index('href="#how"')
+    assert {s["item"] for s in sources.values()} == set(lb.PAIR_ITEMS)
+    assert "wire" not in page
+
+
+def test_page_sources_are_ascii() -> None:
+    """Typography ships as character references / \\u escapes, immune to UTF-8 mangling."""
+    for name in ("index.html", "app.js", "style.css", "leaderboard.data.js", "leaderboard.json"):
+        assert (ROOT / "docs" / name).read_bytes().isascii(), name
+    assert lb.PAGE_TEMPLATE.isascii()
+    page = (ROOT / lb.PAGE).read_text()
+    assert re.search(r'<head>\s*<meta charset="utf-8">', page)
+    assert "I&rsquo;ve run completely out of my inhaler" in page
+    assert lb.ascii_html("child\u2019s \u2192") == "child&rsquo;s &rarr;"
 
 
 A2 = ROOT / lb.TABLE_A2
