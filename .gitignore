@@ -18,6 +18,8 @@ stimuli/*
 *.mp3
 *.flac
 *.ogg
+# The leaderboard page's demo clips (dev-split transcodes, docs/audio/SOURCES.json).
+!docs/audio/*.mp3
 
 # Local runs and secrets
 runs/
