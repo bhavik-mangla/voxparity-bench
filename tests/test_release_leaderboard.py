@@ -59,7 +59,8 @@ def test_page_assets_and_captions() -> None:
     names = ("FRDCB", "REFILL", "CARSVC", "BNKGR", "DRIVE", "ALARMC", "BETPHN", "SEELON")
     assert set(caps) == {f"PAIR_{k}" for k in names}
     for cap in caps.values():
-        assert page.count(cap) == 1
+        assert page.count(lb.ascii_html(cap)) == 1
+        assert "counts from the public dev-split records" not in cap
     assert caps["PAIR_FRDCB"].startswith("Of the 28 systems, 24 release the deposit")
     assert "13 still release it and 9 hold it" in caps["PAIR_FRDCB"]
     # Eight cards, the credit-union pair first; the hero diagram carries no result line.
@@ -77,6 +78,17 @@ def test_page_assets_and_captions() -> None:
     assert page.index('href="#findings"') < page.index('href="#how"')
     assert {s["item"] for s in sources.values()} == set(lb.PAIR_ITEMS)
     assert "wire" not in page
+
+
+def test_page_sources_are_ascii() -> None:
+    """Typography ships as character references / \\u escapes, immune to UTF-8 mangling."""
+    for name in ("index.html", "app.js", "style.css", "leaderboard.data.js", "leaderboard.json"):
+        assert (ROOT / "docs" / name).read_bytes().isascii(), name
+    assert lb.PAGE_TEMPLATE.isascii()
+    page = (ROOT / lb.PAGE).read_text()
+    assert re.search(r'<head>\s*<meta charset="utf-8">', page)
+    assert "I&rsquo;ve run completely out of my inhaler" in page
+    assert lb.ascii_html("child\u2019s \u2192") == "child&rsquo;s &rarr;"
 
 
 A2 = ROOT / lb.TABLE_A2

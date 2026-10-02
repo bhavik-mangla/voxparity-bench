@@ -498,3 +498,73 @@ td.c-name sup a{font-size:12px}
 .fn-h{font:600 19px var(--serif);margin:0 0 4px}
 /* hero: one-line scenario label under the diagram */
 .xdiag figcaption.xd-scn{font-size:14px;line-height:1.5;color:var(--ink2);margin-top:10px;max-width:none}
+
+/* ---- layout tightening (Oct 2, title A): text + stats side by side, diagram full width, one-line how-to ---- */
+.hero{padding:28px 16px 24px}
+@media(min-width:720px){.hero{padding:32px 32px 24px}}
+.hero-head{display:grid;gap:20px}
+@media(min-width:960px){.hero-head{grid-template-columns:minmax(0,1fr) 430px;gap:40px;align-items:start}}
+.kicker{font:600 13px/1.4 var(--sans);text-transform:uppercase;letter-spacing:.08em;color:var(--accent);margin:0 0 6px}
+h1{font:600 clamp(30px,3.1vw,40px)/1.12 var(--serif);margin:0 0 8px;letter-spacing:-.015em;max-width:none}
+.subtitle{font:500 clamp(17px,1.7vw,20px)/1.4 var(--serif);color:var(--ink2);margin:0 0 12px}
+.lede-sub{font-size:16px;line-height:1.55;color:var(--ink2);max-width:none;margin:0 0 16px}
+.actions{margin-bottom:0}
+.hero-head .stats{margin:0}
+@media(min-width:960px){.hero-head .stats{margin-top:4px}.hero-head .stats>div:first-child{border-top:1px solid var(--rule)}}
+.hero-head .stats>div{padding:7px 0}
+.hero-diag{margin-top:24px}
+.hero-diag .xd-title{margin:0 0 8px}
+.meta{margin-top:12px}
+/* how-to: key line and the "How to read" toggle share one line; the expanded text opens below */
+.howto{position:relative}
+.howto details{margin-top:0}
+.howto summary{color:var(--accent)}
+@media(min-width:900px){
+  .howto{padding:8px 16px;padding-right:220px}
+  .howto summary{position:absolute;right:16px;top:8px;padding:0;line-height:1.55;font-size:15px}
+  .howto details[open] p{margin-top:8px}
+}
+/* tables have no visible caption now (aria-label carries it) */
+#leaderboard .controls{margin-bottom:12px}
+.tsub{margin:24px 0 4px}
+
+/* ---- type scale (Oct 2): six sizes, two weights, three families with fixed roles ----
+   sizes  40 H1 (clamp 30-40) | 26 H2 + stat numbers | 19 H3 + subtitle + brand | 16 body prose | 14 secondary/UI/tables/code | 12.5 labels, intervals, chart text
+   weights 400 text, 600 headings/emphasis
+   serif = H1, H2, H3 headings, transcripts, brand; mono = tool names and code only; sans = everything else */
+:root{--fs-h1:clamp(30px,3.1vw,40px);--fs-h2:clamp(22px,2.6vw,26px);--fs-h3:19px;--fs-body:16px;--fs-sm:14px;--fs-xs:12.5px}
+body{font-size:var(--fs-body)}
+code{font-size:var(--fs-sm)}
+h1{font-size:var(--fs-h1);font-weight:600}
+h2,#leaderboard h2{font:600 var(--fs-h2)/1.2 var(--serif)}
+.finding h3,.refs h3,.fn-h,.tsub,.xd-title,.hero-diag .xd-title{font:600 var(--fs-h3)/1.3 var(--serif)}
+.brand{font:600 var(--fs-h3) var(--serif)}
+.subtitle{font:400 var(--fs-h3)/1.4 var(--sans);color:var(--ink2)}
+.kicker,.fnum,.xd-k,.tag,.gloss dt span{font:600 var(--fs-xs)/1.5 var(--sans);text-transform:uppercase;letter-spacing:.06em}
+.kicker{color:var(--accent)}
+.fnum,.xd-k,.gloss dt span{color:var(--muted)}
+.gloss dt span{text-transform:none;letter-spacing:0;font-weight:400}
+.stats dd,.hero-head .stats dd{font:600 var(--fs-h2)/1.15 var(--sans);font-variant-numeric:tabular-nums}
+.stats dd small{font-size:var(--fs-sm);font-weight:400}
+.stats dt{font-size:var(--fs-body);font-weight:600}
+.stats>div>span{font-size:var(--fs-sm)}
+.lede-sub,.sub,.finding p,.gloss dd,.refs dd,.howto p,.xd-q,.pair .t,.pairs.compact .pair .t{font-size:var(--fs-body)}
+.refs dt,.gloss dt,.pairs.compact .pair h3{font-size:var(--fs-body);font-weight:600}
+.note,.fn,.res,.pairs.compact .res,.xdiag .res,.xdiag figcaption,.xdiag figcaption.xd-scn,.finding figcaption,.legend,.meta,.foot,.swipe,.howto details p,#lbTable .note,
+.btn,.seg,.filter,.copy,.top nav a,.howto summary,.var b,.pairs.compact .var b,.xd-vt b,.var code,.pairs.compact .var code,.xd-gold code,.code pre,table,th,.tip{font-size:var(--fs-sm)}
+th small,.ci,.vd,td.c-name sup a,.more{font-size:var(--fs-xs)}
+.xdiag figcaption .more{font-size:inherit}
+td.c-name{font-weight:600}
+.c-axis,.c-lab,.c-lab-ref,.c-val,.c-head,.c-tag,.c-fn{font-size:var(--fs-xs);font-family:var(--sans)}
+.c-tag{fill:var(--muted)}
+/* one meaning per symbol: the disclosure toggle uses +/- (play/pause triangles are for audio only) */
+.howto summary{list-style:none}
+.howto summary::-webkit-details-marker{display:none}
+.howto summary::before{content:"+";display:inline-block;width:1em;font-weight:600}
+.howto details[open] summary::before{content:"\2212"}
+b,strong,.fn .fname{font-weight:600}
+.finding .fnum{font:600 var(--fs-xs)/1.5 var(--sans);text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.play,.xd-var .play,.pairs.compact .play,.mini .play{font-size:var(--fs-xs)}
+.theme-btn,.xd-arr{font-size:var(--fs-sm)}
+td.c-name sup{line-height:0}
+@media(min-width:900px){.finding{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:40px;padding:24px 0}}
