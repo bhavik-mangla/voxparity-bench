@@ -294,9 +294,7 @@ h1{margin-bottom:6px}
 @media(min-width:960px){.stats{margin-top:20px}.stats>div:first-child{border-top:1px solid var(--rule)}}
 .xdiag{margin:0;background:var(--surface);border:1px solid var(--rule);border-radius:12px;padding:12px 14px 10px}
 .xd-grid{display:grid;grid-template-columns:minmax(0,.95fr) 32px minmax(0,1.4fr) 22px minmax(0,.85fr);
-  grid-template-rows:auto minmax(60px,auto) minmax(60px,auto);grid-template-areas:"s1 . s2 . s3" "tr fk va a1 ga" "tr fk vb a2 gb";column-gap:0;row-gap:8px;align-items:stretch}
-.xd-step{margin:0;font:600 13px var(--sans);color:var(--ink)}
-.xd-s1{grid-area:s1}.xd-s2{grid-area:s2}.xd-s3{grid-area:s3}
+  grid-template-rows:minmax(60px,auto) minmax(60px,auto);grid-template-areas:"tr fk va a1 ga" "tr fk vb a2 gb";column-gap:0;row-gap:8px;align-items:stretch}
 .xd-box{background:var(--bg);border:1px solid var(--rule);border-radius:10px;padding:7px 10px;min-width:0}
 .xd-box.cue{border-color:var(--accent);border-width:1.5px;background:var(--accent-soft)}
 .xd-k{display:block;font:500 10.5px var(--mono);color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
@@ -327,10 +325,35 @@ h1{margin-bottom:6px}
 .xdiag figcaption{font-size:12px;color:var(--muted)}
 @media(max-width:700px){
   .xd-grid{grid-template-columns:minmax(0,1fr);grid-template-rows:none;row-gap:6px;
-    grid-template-areas:"s1" "tr" "s2" "va" "vb" "s3" "ga" "gb"}
+    grid-template-areas:"tr" "va" "vb" "ga" "gb"}
   .xd-fork,.xd-arr{display:none}
-  .xd-s2,.xd-s3{margin-top:6px}
+  .xd-va,.xd-ga{margin-top:6px}
   .xd-var{min-height:56px}
   .xd-ab{display:inline}
   .xd-gold{flex-direction:row;justify-content:flex-start;align-items:baseline;gap:10px}
+}
+
+/* ---- More examples (Oct 2): seven compact pair cards with cue-kind tags ---- */
+.pairs.compact{gap:12px}
+@media(min-width:760px){.pairs.compact{grid-template-columns:1fr 1fr}}
+@media(min-width:820px){.pairs.compact>.pair:last-child:nth-child(odd){grid-column:auto}}
+.pairs.compact .pair{padding:12px 14px;border-radius:12px;display:flex;flex-direction:column}
+.pairs.compact .pair header{display:flex;flex-wrap:wrap;align-items:center;gap:4px 10px;margin:0 0 4px}
+.pairs.compact .pair h3{font:600 15px/1.3 var(--sans);margin:0;color:var(--ink)}
+.tag{display:inline-block;font:500 11px/1.5 var(--mono);text-transform:uppercase;letter-spacing:.05em;color:var(--accent);background:var(--accent-soft);border:1px solid color-mix(in srgb,var(--accent) 35%,var(--rule));border-radius:999px;padding:0 8px}
+.pairs.compact .pair .t{font:14.5px/1.4 var(--serif);margin:0 0 8px}
+.pairs.compact .var{padding:5px 10px;gap:10px;margin-bottom:6px;border-radius:8px}
+.pairs.compact .var>div{display:flex;flex-wrap:wrap;align-items:baseline;gap:0 10px;min-width:0}
+.pairs.compact .var b{display:inline;font-size:13.5px;font-weight:600}
+.pairs.compact .var code{font-size:12.5px;overflow-wrap:anywhere}
+.pairs.compact .play{width:30px;height:30px;font-size:11px}
+.pairs.compact .res{font-size:13px;line-height:1.45;margin:4px 0 0}
+
+/* ---- hero title line (Oct 2): one small line above the diagram replaces the subtitle and the numbered column labels ---- */
+.xd-title{margin:0 0 -6px;font:600 18px/1.3 var(--serif);color:var(--ink)}
+@media(min-width:960px){
+  .hero-grid{grid-template-areas:"ttl ." "fig st";row-gap:8px}
+  .xd-title{grid-area:ttl;margin:0}
+  .hero-grid>.xdiag{grid-area:fig}
+  .hero-grid>.stats{grid-area:st;margin-top:0}
 }

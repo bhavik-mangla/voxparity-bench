@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import copy
 import importlib.util
+import json
 import re
 from pathlib import Path
 
@@ -54,8 +55,18 @@ def test_page_assets_and_captions() -> None:
     assert "@@" not in page
     assert page.count(f'content="{lb.OG_IMAGE}"') == 2
     assert "huggingface.co/spaces/bhavikmangla/voxparity-leaderboard" in page
-    for cap in lb.pair_captions(lb.pair_counts(ROOT)).values():
-        assert cap in page
+    caps = lb.pair_captions(lb.pair_counts(ROOT))
+    assert set(caps) == {"HERO_FRDCB"} | {
+        f"PAIR_{k}" for k in ("REFILL", "CARSVC", "BNKGR", "DRIVE", "ALARMC", "BETPHN", "SEELON")
+    }
+    for cap in caps.values():
+        assert page.count(cap) == 1
+    # Every playable clip appears once, each has provenance, and the removed pair is gone.
+    srcs = re.findall(r'data-src="audio/([^"]+)"', page)
+    sources = json.loads((ROOT / lb.AUDIO_SOURCES).read_text())
+    assert len(srcs) == len(set(srcs)) == 16 and set(srcs) == set(sources)
+    assert {s["item"] for s in sources.values()} == set(lb.PAIR_ITEMS)
+    assert "wire" not in page
 
 
 A2 = ROOT / lb.TABLE_A2
