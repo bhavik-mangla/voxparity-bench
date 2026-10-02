@@ -195,7 +195,8 @@
     var twin = rows.filter(function (r) { return r.transcript_path; }).sort(function (a, b) { return b.gain.mean - a.gain.mean; });
     var nt = opts.twinOnly ? [] : rows.filter(function (r) { return !r.transcript_path; }).sort(function (a, b) { return b.gain.mean - a.gain.mean; });
     var narrow = !opts.W && host.clientWidth < 620;
-    var W = opts.W || (narrow ? 420 : 960), L = opts.L || (narrow ? 150 : 270), R = 24, rh = opts.rh || 22, top = 34;
+    /* narrow: draw at the box's own width so SVG text renders at its nominal size (no downscaling below 12px) */
+    var W = opts.W || (narrow ? Math.max(320, Math.min(440, host.clientWidth - 16)) : 960), L = opts.L || (narrow ? 150 : 270), R = 24, rh = opts.rh || 22, top = 34;
     var blocks = [['With a transcript path · gain over the null', twin], ['Audio only † · audio credit minus the cascade’s', nt]].filter(function (b) { return b[1].length; });
     var H = top + blocks.reduce(function (s, b) { return s + (opts.twinOnly ? 4 : 30) + b[1].length * rh; }, 0) + 30;
     var svg = el('svg', { viewBox: '0 0 ' + W + ' ' + H, role: 'img', 'aria-label': 'Forest plot of the gain over the words-only null, with 95% intervals' }, host);
@@ -295,7 +296,8 @@
   var A5 = [['gemini-3.7-flash',.38,.14],['MiMo-V2.6-Pro',.34,.24],['Qwen3.8-Omni',.27,.20],['gemini-3.8-flash',.38,.16],['MiMo-V2.6-Flash',.36,.15],['StepAudio 3',.38,.13],['Gemini 2.5 native-audio Live',.30,.17],['Inkling',.23,.12],['MiMo-V2.5',.40,.15],['Gemini 3.8 Live',.48,.13],['Qwen2.5-Omni-7B',.60,.19],['gpt-realtime-2.1',.57,.11],['Muse Spark 1.2',.53,.08],['Qwen3.8-Omni-Flash RT',.29,.06],['Qwen3-Omni-30B',.70,.11],['gpt-realtime-2.1-mini',.60,.13],['Grok Voice',.67,.15],['gpt-audio',.55,.08],['Gemini 3.1 Flash Live',.38,.09],['Qwen-Audio-3.1 RT',.53,.11],['Gemma-4-12B',.37,.11],['Gemma-4-E4B',.51,.09],['Voxtral Small',.30,.07],['gpt-audio-mini',.37,.11],['Nemotron-3-Nano-Omni',.09,.05],['Phi-4-multimodal',.36,.07],['Qwen3.5-Omni-Flash RT',.16,.03],['NemotronLabs VoiceChat 11B',.35,.04]];
   function drawErr(host, opts) {
     opts = opts || {};
-    var W = opts.W || 560, H = opts.H || 400, L = 52, B = 44, T = 16, Rr = 16;
+    /* drawn at the box's width (max 560) so labels keep their nominal size on phones */
+    var W = opts.W || Math.max(320, Math.min(560, host.clientWidth - 16)), H = opts.H || (W < 480 ? 340 : 400), L = 52, B = 44, T = 16, Rr = 16;
     var svg = el('svg', { viewBox: '0 0 ' + W + ' ' + H, role: 'img', 'aria-label': 'Unsafe execution against over-triggering for 28 systems; all lie above the equal-rates line' }, host);
     var sx = function (v) { return L + v / 0.8 * (W - L - Rr); }, sy = function (v) { return H - B - v / 0.8 * (H - B - T); };
     [0, .2, .4, .6, .8].forEach(function (t) {
@@ -325,12 +327,13 @@
     });
     return svg;
   }
-  drawErr($('#errChart'));
   window.VXP_drawErr = drawErr;
 
   /* ---------- horizontal bars ---------- */
   function hbars(hostSel, data, max, fmt, aria) {
-    var host = $(hostSel), W = 560, L = 190, R = 60, rh = 40, T = 10, H = T + data.length * rh + 26;
+    var host = $(hostSel); host.innerHTML = '';
+    /* phones: the label sits above its bar, so long labels never clip */
+    var W = Math.max(320, Math.min(560, host.clientWidth - 16)), stack = W < 480, L = stack ? 18 : 190, R = 52, rh = stack ? 54 : 40, T = 10, H = T + data.length * rh + 26;
     var svg = el('svg', { viewBox: '0 0 ' + W + ' ' + H, role: 'img', 'aria-label': aria }, host);
     var sx = function (v) { return L + v / max * (W - L - R); };
     for (var t = 0; t <= max + 1e-9; t += max / 4) {
@@ -338,13 +341,17 @@
       el('text', { x: sx(t), y: H - 6, 'text-anchor': 'middle', 'class': 'c-axis c-tick' }, svg, fmt(t));
     }
     data.forEach(function (d, i) {
-      var y = T + i * rh + 8, h = rh - 18;
-      el('text', { x: L - 10, y: y + h / 2 + 4, 'text-anchor': 'end', 'class': 'c-lab' }, svg, d.label);
+      var y = T + i * rh + (stack ? 22 : 8), h = stack ? 20 : rh - 18;
+      if (stack) el('text', { x: L, y: y - 6, 'class': 'c-lab' }, svg, d.label);
+      else el('text', { x: L - 10, y: y + h / 2 + 4, 'text-anchor': 'end', 'class': 'c-lab' }, svg, d.label);
       el('rect', { x: L, y: y, width: Math.max(2, sx(d.v) - L), height: h, rx: 4, 'class': d.muted ? 'c-bar2' : 'c-bar' }, svg);
       if (d.lo != null) el('line', { x1: sx(d.lo), x2: sx(d.hi), y1: y + h / 2, y2: y + h / 2, 'class': 'c-err' }, svg);
       el('text', { x: sx(d.hi != null ? d.hi : d.v) + 6, y: y + h / 2 + 4, 'class': 'c-val' }, svg, d.txt);
     });
   }
+  function drawFindings() {
+  $('#errChart').innerHTML = '';
+  drawErr($('#errChart'));
   /* Finding 2: PAPER.md §5.4, description note, gemini-3.7-flash own audio: env 1.00, second voice 0.97, emotional delivery 0.66 [0.58, 0.74] */
   hbars('#noteChart', [
     { label: 'Environmental sound', v: 1.00, txt: '1.00' },
@@ -358,9 +365,11 @@
     { label: 'Field: perfect hearing', v: 0.13, txt: '+0.13', muted: 1 },
     { label: 'Field: perfect deciding', v: 0.22, txt: '+0.22', muted: 1 }
   ], 0.4, function (t) { return '+' + t.toFixed(1); }, 'Headroom from perfect hearing versus perfect deciding');
+  }
+  drawFindings();
 
   render();
-  var rt; addEventListener('resize', function () { clearTimeout(rt); rt = setTimeout(render, 150); });
+  var rt; addEventListener('resize', function () { clearTimeout(rt); rt = setTimeout(function () { render(); drawFindings(); }, 150); });
 })();
 
 /* External links open in a new tab: on the HF Space the page sits in an iframe,

@@ -357,3 +357,109 @@ h1{margin-bottom:6px}
   .hero-grid>.xdiag{grid-area:fig}
   .hero-grid>.stats{grid-area:st;margin-top:0}
 }
+
+/* ---- readability pass (Oct 2): AA contrast, type floor, prose measure, tap targets, spacing scale ---- */
+/* Text colours that failed WCAG AA: muted 3.2-3.5:1 -> >=4.6:1; accent text 3.8-4.3:1 -> >=4.8:1; warn 2.8-3.1:1 -> >=4.5:1 */
+:root{--muted:#666560;--accent:#1d63bb;--warn:#b9461a}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--muted:#9c9a93;--accent:#5a9cf0;--warn:#ec7a4b}}
+:root[data-theme="dark"]{--muted:#9c9a93;--accent:#5a9cf0;--warn:#ec7a4b}
+/* spacing scale: 4 8 12 16 24 32 48 */
+section{padding:48px 0}
+#leaderboard{padding-top:40px}
+h2{margin-bottom:12px}
+/* measure: ~65-85 characters per line for prose (system sans averages ~0.45em per character) */
+.lede-sub,.sub,.gloss dd,.refs dd,.howto,.note,.fn,.finding figcaption,.xdiag .res,.xdiag figcaption{max-width:38em}
+.finding .ftext p{max-width:62ch}
+/* hero */
+.hero{padding:32px 16px 32px}
+@media(min-width:720px){.hero{padding:36px 32px 36px}}
+h1{margin-bottom:12px}
+.lede-sub{font-size:16px;line-height:1.55;margin-bottom:16px}
+.actions{margin-bottom:28px}
+.btn{padding:7px 16px;font-size:15px}
+.xd-title{font-size:19px}
+.xd-k{font-size:11.5px}
+.xd-q{font-size:15.5px;line-height:1.45}
+.xd-vt b{font-size:14px;line-height:1.35}
+.xd-gold code{font-size:14px}
+.xdiag{padding:14px 16px 12px}
+.xdiag .res{font-size:15px;line-height:1.5;margin-top:12px}
+.xdiag figcaption{font-size:13px;line-height:1.5;margin-top:6px}
+.stats>div{padding:10px 0}
+.stats dt{font-size:15px;line-height:1.4}
+.stats>div>span{font-size:13.5px;line-height:1.45}
+.meta{font-size:13px;margin-top:20px}
+/* leaderboard */
+.howto{padding:12px 16px;margin-bottom:16px}
+.howto p{font-size:15px;line-height:1.55}
+.howto summary{font-size:14px;padding:4px 0}
+.howto details p{font-size:14.5px;line-height:1.55}
+.controls{gap:10px;margin-bottom:16px}
+.seg{font-size:15px;padding:7px 16px}
+.filter{font-size:15px}
+.filter select{padding:5px 8px}
+table{font-size:14.5px}
+#leaderboard th,#leaderboard td{padding:10px 9px}
+#leaderboard .c-verdict{padding-left:6px;padding-right:6px}
+th{font-size:13.5px}
+th small{font-size:12px;line-height:1.35}
+table caption{font-size:14px;padding:12px 12px 4px}
+.ci{font-size:13px}
+.vd{font-size:13px;padding:2px 9px;white-space:nowrap;display:inline-block;line-height:1.5}
+td.c-name sup a{font-size:12px}
+.legend{font-size:14px;gap:8px 20px;margin:12px 0 16px}
+.swipe{font-size:13.5px}
+.fn{font-size:14.5px;line-height:1.55;margin-bottom:28px}
+.fn li{margin:6px 0}
+.refs h3{font-size:19px;margin:8px 0 4px}
+.refs dt{font-size:15.5px;margin-top:16px}
+.refs dd{font-size:15px;line-height:1.55;margin-top:4px}
+.linkbtn{padding:2px 0}
+.tsub{margin:32px 0 6px}
+#lbTable .note{color:var(--ink2);font-size:15px;line-height:1.55}
+/* examples */
+.pairs.compact{gap:16px}
+.pairs.compact .pair{padding:16px 18px}
+.pairs.compact .pair header{margin-bottom:8px}
+.pairs.compact .pair h3{font-size:16px}
+.tag{font-size:12px;padding:1px 9px}
+.pairs.compact .pair .t{font-size:16px;line-height:1.45;margin-bottom:12px}
+.pairs.compact .var{padding:6px 12px;margin-bottom:8px}
+.pairs.compact .var b{font-size:14.5px}
+.pairs.compact .var code{font-size:13.5px}
+.pairs.compact .play{width:36px;height:36px;font-size:12px}
+.pairs.compact .res{font-size:14.5px;line-height:1.55;margin-top:8px}
+.note{font-size:14.5px;line-height:1.55}
+/* findings, glossary, code */
+.finding{padding:32px 0}
+.fnum{font-size:13px;margin-bottom:8px}
+.finding h3{margin-bottom:12px}
+.finding figcaption{font-size:14px;line-height:1.55;margin-top:10px}
+.c-axis{font-size:12px}
+.c-lab-ref,#errChart .c-axis{paint-order:stroke;stroke:var(--surface);stroke-width:4px;stroke-linejoin:round}
+.gloss{gap:0 32px}
+.gloss dt,.gloss dd{padding-top:14px;padding-bottom:4px}
+.gloss dt span{font-size:13px;margin-top:2px}
+.gloss dd{line-height:1.6}
+.code pre{font-size:13.5px}
+.copy{font-size:13px;padding:5px 10px}
+.foot{font-size:14px}
+/* mobile: tap targets >=40px, no clipped nav item */
+@media(max-width:640px){
+  .top nav a{padding:10px 0}
+  .theme-btn{width:40px;height:40px}
+  .btn{padding:10px 16px}
+  .seg{padding:10px 16px}
+  .filter select{min-height:40px}
+  .howto summary{padding:9px 0}
+  .xd-var .play,.pairs.compact .play{width:40px;height:40px}
+  .copy{padding:10px 12px;min-height:40px}
+  .seg{min-height:40px}
+  .brand{padding:8px 0}
+  .linkbtn{padding:9px 0;display:inline-block}
+  #leaderboard th,#leaderboard td{padding:10px 8px}
+  .stats dd{font-size:24px}
+}
+@media(max-width:440px){.top nav a:nth-child(n+3){display:none}}
+.nw,.xd-k{white-space:nowrap}
+@media(max-width:700px){.xd-gold code{min-width:0}}
