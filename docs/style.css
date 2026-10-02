@@ -568,3 +568,62 @@ b,strong,.fn .fname{font-weight:600}
 .theme-btn,.xd-arr{font-size:var(--fs-sm)}
 td.c-name sup{line-height:0}
 @media(min-width:900px){.finding{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:40px;padding:24px 0}}
+
+/* ---- polish (Oct 2): three hero levels, breathing room on the 4-8-12-16-24-32-48 scale, compact table headers ----
+   tier 3 moves 19 -> 20px so the subtitle can sit one clear step below the H1 without a seventh size */
+:root{--fs-h3:20px}
+/* hero: kicker -> H1 -> subtitle (sans 600, full ink) -> lede (16px, muted, more air above) */
+.hero{padding:40px 16px 24px}
+@media(min-width:720px){.hero{padding:40px 32px 24px}}
+.kicker{margin:0 0 8px}
+h1{margin:0 0 12px}
+.subtitle{font:600 var(--fs-h3)/1.4 var(--sans);color:var(--ink);margin:0 0 16px;max-width:36em}
+.lede-sub{color:var(--ink2);max-width:36em;margin:0 0 24px}
+.hero-head{row-gap:32px}
+@media(min-width:960px){
+  .hero-head .stats{margin-top:0}
+}
+.hero-head .stats>div{padding:12px 0}
+.hero-head .stats dt{margin-top:4px}
+.hero-diag{margin-top:32px}
+.meta{margin-top:16px}
+/* hero diagram: scenario line sits under the gold column */
+@media(min-width:701px){.xdiag figcaption.xd-scn{text-align:right}}
+/* leaderboard: heading / how-to / controls on the scale; controls sit 12px above the table */
+#leaderboard h2{margin-bottom:16px}
+.howto{margin-bottom:24px}
+#leaderboard .controls{margin-bottom:12px}
+#lbTable th{vertical-align:bottom;padding-top:8px;padding-bottom:8px}
+#lbTable th small{margin-top:2px}
+@media(min-width:1100px){
+  #lbTable th.c-probe{width:11.5%}
+  #lbTable th.c-name{width:22%}
+  #lbTable th.c-vendor{width:12%}
+  #lbTable th.c-credit{width:17%}
+  #lbTable th.c-gain{width:14%}
+  #lbTable th.c-both{width:11.5%}
+}
+/* the fixed grid needs the full 1216px table; narrower desktops size columns to content (the wrap scrolls if needed) */
+@media(min-width:1100px) and (max-width:1279px){
+  #lbTable table{table-layout:auto}
+  #lbTable th[class]{width:auto}
+  #lbTable th,#lbTable th small{white-space:nowrap}
+}
+/* end of the tables -> notes and reference rows: a clear break */
+.legend{margin-bottom:0}
+.after-tables{margin-top:40px;padding-top:32px;border-top:1px solid var(--rule)}
+
+/* verdict inline (no pill column): blue = passes, orange = significantly below; slim bar on the row's left edge.
+   The verdict is also in visually hidden text in the name cell. */
+.sr{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+#lbTable td.c-name{position:relative}
+#lbTable tr.is-pass td.c-name,#lbTable tr.is-pass td.c-gain .v{color:var(--accent);font-weight:600}
+#lbTable tr.is-below td.c-name,#lbTable tr.is-below td.c-gain .v{color:var(--warn);font-weight:600}
+#lbTable tr.is-pass td.c-name{box-shadow:inset 3px 0 0 var(--accent)}
+#lbTable tr.is-below td.c-name{box-shadow:inset 3px 0 0 var(--warn)}
+#lbTable td.c-name,#lbTable th.c-name{padding-left:14px}
+/* table view: legend swatches match the row bars; chart view keeps the plot's dot / triangle */
+body:not(.view-chart) .legend .lg.pass,body:not(.view-chart) .legend .lg.below{width:12px;height:12px;border:0;border-radius:2px;vertical-align:-1px;margin-right:8px}
+body:not(.view-chart) .legend .lg.pass{background:var(--accent)}
+body:not(.view-chart) .legend .lg.below{background:var(--warn)}
+body:not(.view-chart) .legend .lg-ns{display:none}

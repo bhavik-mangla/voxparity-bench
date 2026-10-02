@@ -116,15 +116,14 @@
   /* ---------- table ---------- */
   var sortKey = 'gain', sortDir = -1;
   var COLS = [
-    ['name', 'System', '', 'c-name', 'Click to sort'],
+    ['name', 'System', '', 'c-name', 'Click to sort. Blue name and gain: passes the words-only null test (Holm). Orange: significantly below the cascade.'],
     [null, 'Vendor', '', 'c-vendor', ''],
     [null, 'Serving', '', 'c-mode', 'file: one API call per turn; realtime: streaming API; local: open weights run locally'],
-    ['credit', 'Right action', 'on calls with a cue', 'c-credit num', 'Paper: cue-bearing credit. Typed tool call scored against the gold on the 206 calls whose audio carries a cue. Grey dashed tick: words-only cascade; gold tick: volunteers (reference).'],
-    [null, 'Null test', 'after Holm', 'c-verdict', 'Passes when the audio moves the system\u2019s actions more than it moves the words-only cascade\u2019s, after Holm correction.'],
-    ['gain', 'Beyond the words', 'gain over the null', 'c-gain num', 'Paper: difference-in-differences. (Audio minus own transcript) minus (cascade audio minus cascade transcript), on calls with a cue. 95% interval.'],
+    ['credit', 'Right action', 'cue calls', 'c-credit num', 'Paper: cue-bearing credit. Typed tool call scored against the gold on the 206 calls whose audio carries a cue. Grey dashed tick: words-only cascade; gold tick: volunteers (reference).'],
+    ['gain', 'Beyond the words', 'gain vs null', 'c-gain num', 'Paper: difference-in-differences. (Audio minus own transcript) minus (cascade audio minus cascade transcript), on calls with a cue. 95% interval.'],
     [null, 'Holm p', '', 'c-p num', 'Holm-corrected bootstrap p within the family; floored by the bootstrap.'],
-    ['probe', 'Perception probe', 'accuracy (n answered)', 'c-probe num', 'Separate multiple-choice question about what is audible, all 309 calls, counting answers that name an option. Not the action score.'],
-    ['both', 'Both deliveries right', 'of 130 scenarios', 'c-both num', 'Share of the 130 scenarios whose correct action differs between deliveries where every delivery is right. Words-only readers cannot score; corroborates, does not rank.']
+    ['probe', 'Perception probe', 'accuracy (n)', 'c-probe num', 'Separate multiple-choice question about what is audible, all 309 calls, counting answers that name an option; (n) is the number answered. Not the action score.'],
+    ['both', 'Both deliveries', 'right, of 130', 'c-both num', 'Share of the 130 scenarios whose correct action differs between deliveries where every delivery is right. Words-only readers cannot score; corroborates, does not rank.']
   ];
   var get = { gain: function (r) { return r.gain.mean; }, credit: function (r) { return r.cue_credit.mean; }, both: function (r) { return r.both_right; }, name: function (r) { return clean(r.name).toLowerCase(); }, probe: function (r) { return r.probe ? r.probe.mean : -1; } };
   function bar(v) {
@@ -136,19 +135,18 @@
     var h = '<div class="table-wrap"><table aria-label="' + esc(caption) + '"><thead><tr>';
     COLS.forEach(function (c) {
       var label = c[0] === 'gain' && gainHead ? gainHead[0] : c[1], sub = c[0] === 'gain' && gainHead ? gainHead[1] : c[2];
-      if (gainHead && c[3] === 'c-verdict') sub = 'accuracy, after Holm';
       var inner = esc(label) + (c[0] && sortKey === c[0] ? (sortDir < 0 ? ' \u2193' : ' \u2191') : '') + (sub ? '<small>' + esc(sub) + '</small>' : '');
-      h += '<th class="' + c[3] + '" title="' + esc(c[4]) + '" scope="col">' + (c[0] ? '<button data-k="' + c[0] + '">' + inner + '</button>' : inner) + '</th>';
+      var ttl = c[0] === 'gain' && gainHead ? 'Audio credit minus the words-only cascade\u2019s credit on the same calls with a cue. 95% interval.' : c[4];
+      h += '<th class="' + c[3] + '" title="' + esc(ttl) + '" scope="col">' + (c[0] ? '<button data-k="' + c[0] + '">' + inner + '</button>' : inner) + '</th>';
     });
     h += '</tr></thead><tbody>';
     rows.forEach(function (r) {
       var k = vclass(r);
-      h += '<tr data-name="' + esc(r.name) + '" class="' + (k === 'pass' ? 'is-pass' : '') + '">' +
-        '<td class="c-name">' + esc(clean(r.name)) + (r.transcript_path ? '' : ' \u2020') + mark(r) + '</td>' +
+      h += '<tr data-name="' + esc(r.name) + '" class="' + (k === 'pass' ? 'is-pass' : (k === 'below' ? 'is-below' : '')) + '">' +
+        '<td class="c-name">' + esc(clean(r.name)) + (r.transcript_path ? '' : ' \u2020') + mark(r) + '<span class="sr"> \u00B7 null test: ' + vtext(r) + '</span></td>' +
         '<td class="c-vendor">' + esc(r.vendor) + '</td>' +
         '<td class="c-mode">' + r.mode + '</td>' +
         '<td class="c-credit num"><span class="v">' + p2(r.cue_credit.mean) + '</span> <span class="ci">' + ci(r.cue_credit) + '</span>' + bar(r.cue_credit.mean) + '</td>' +
-        '<td class="c-verdict"><span class="vd ' + k + '">' + vtext(r) + '</span></td>' +
         '<td class="c-gain num"><span class="v">' + f2(r.gain.mean) + '</span> <span class="ci">' + ci(r.gain, true) + '</span></td>' +
         '<td class="c-p num">' + fp(r.p_holm) + '</td>' +
         '<td class="c-probe num">' + (r.probe ? p2(r.probe.mean) + ' <span class="ci">(' + r.probe.n + ')</span>' : '<span class="ci" title="' + esc(r.probe_note || '') + '">n/a</span>') + '</td>' +
@@ -164,7 +162,7 @@
     if (tw.length) h += tableHTML(tw, (filter ? filter + ': ' : '') + tw.filter(function (r) { return r.verdict === 'passes'; }).length + ' of ' + tw.length + ' systems with a transcript path pass', null);
     if (nt.length) h += '<h3 class="tsub" id="twinless">Audio-only systems \u2020</h3><p class="note tnote">These ' + twinless.length + ' systems take audio only, so the test cannot run on them; they are compared on accuracy against the cascade on the same calls. ' +
       LB.counts.twinless_below + ' of ' + LB.counts.twinless + ' are less accurate than the cascade; none is more.</p>' +
-      tableHTML(nt, 'Audio-only systems, compared on accuracy', ['Vs the cascade', 'audio credit minus the cascade\u2019s']);
+      tableHTML(nt, 'Audio-only systems, compared on accuracy', ['Vs the cascade', 'credit difference']);
     var host = $('#lbTable'); host.innerHTML = h;
     host.querySelectorAll('th button').forEach(function (b) {
       b.addEventListener('click', function () { var k = b.dataset.k; if (sortKey === k) sortDir = -sortDir; else { sortKey = k; sortDir = k === 'name' ? 1 : -1; } drawTable($('#modeFilter').value); });
