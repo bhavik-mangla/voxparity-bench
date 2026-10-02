@@ -46,6 +46,14 @@ local = [
     "en-core-web-sm @ https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.8.0/en_core_web_sm-3.8.0-py3-none-any.whl ; sys_platform == 'darwin' and platform_machine == 'arm64'",
 ]
 
+inspect = [
+    # The Inspect AI task for the public dev split (`voxparity_dev`):
+    # `uv sync --extra inspect`. openai is the SDK behind Inspect's openai,
+    # openrouter and openai-compatible model providers.
+    "inspect-ai>=0.3.275",
+    "openai>=3.1.0",
+]
+
 paper = [
     # Figures for `voxparity analyze paper` only; the analyses run without it.
     "matplotlib>=3.9",
@@ -73,6 +81,9 @@ duplex = [
 
 [project.scripts]
 voxparity = "voxparity.cli:app"
+
+[project.entry-points.inspect_ai]
+voxparity = "voxparity.voxparity_dev._registry"
 
 [build-system]
 requires = ["hatchling"]
@@ -106,6 +117,12 @@ follow_imports = "skip"
 ignore_missing_imports = true
 
 [[tool.mypy.overrides]]
+# `inspect` extra: typed and installed in CI; a checkout without the extra must
+# still type-check the rest of the package.
+module = ["inspect_ai", "inspect_ai.*"]
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
 # `local` extra (macOS-arm64 wheels only): installed but untyped on a Mac,
 # absent on Linux CI. One override covers both.
 module = ["mlx", "mlx.*", "mlx_audio", "mlx_audio.*"]
@@ -128,3 +145,10 @@ addopts = "-q"
 [tool.uv]
 # moshi-mlx and mlx-audio>=0.5.3 cannot share an environment (see `duplex`).
 conflicts = [[{ extra = "local" }, { extra = "duplex" }]]
+
+[tool.inspect-evals-lint]
+# The Inspect task for the public dev split lives in src/voxparity/voxparity_dev/
+# (`inspect-evals-lint --task src/voxparity/voxparity_dev/voxparity_dev.py`). The
+# register entry holds the metadata, so no per-package eval.yaml is required.
+preset = "single-eval"
+eval-yaml-required = false
