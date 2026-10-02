@@ -249,26 +249,34 @@
   });
   $('#modeFilter').addEventListener('change', render);
 
-  /* ---------- diagram waveforms: RMS envelopes of the two dev-split clips (62 bins) ---------- */
+  /* ---------- hero diagram waveforms: RMS envelopes of the two dev-split refill clips (62 bins) ---------- */
   var ENV = {
     a: { dur: 6.28, env: [0.001,0.002,0.163,0.313,0.124,0.376,0.35,0.301,0.088,0.246,0.06,0.416,0.258,0.357,0.359,0.339,0.299,0.274,0.162,0.262,0.22,0.227,0.156,0.186,0.194,0.225,0.119,0.011,0.005,0.003,0.006,0.191,0.179,0.153,0.085,0.035,0.189,0.166,0.219,0.115,0.199,0.046,0.168,0.175,0.068,0.186,0.119,0.119,0.132,0.155,0.132,0.08,0.138,0.101,0.07,0.034,0.111,0.064,0.05,0.002,0,0] },
     b: { dur: 4.8, env: [0.002,0.001,0.011,0.269,0.733,0.795,0.703,0.445,0.747,0.214,0.535,1,0.609,0.717,0.774,0.82,0.629,0.716,0.728,0.71,0.602,0.692,0.547,0.766,0.494,0.785,0.709,0.668,0.662,0.549,0.624,0.435,0.628,0.627,0.816,0.19,0.863,0.392,0.4,0.964,0.739,0.709,0.79,0.26,0.695,0.447,0.674,0.826,0.429,0.218,0.392,0.581,0.445,0.277,0.18,0.007,0.011,0.005,0.003,0.001,0.001,0] }
   };
-  [['a', '.d-wave-a', 'd-bar'], ['b', '.d-wave-b', 'd-bar-cue']].forEach(function (c) {
-    document.querySelectorAll(c[1]).forEach(function (g) {
-      var d = ENV[c[0]], Wd = 248 * d.dur / 6.28, bw = Wd / d.env.length;
-      d.env.forEach(function (v, i) { var h = Math.max(1, v * 26); el('rect', { x: (i * bw).toFixed(1), y: (13 - h / 2).toFixed(1), width: Math.max(1, bw - 1).toFixed(1), height: h.toFixed(1), rx: 0.8, 'class': c[2] }, g); });
-    });
+  /* Bars span the clip's duration on a common time scale (variant A, the longer clip, fills the box). */
+  document.querySelectorAll('svg.xd-wave').forEach(function (svg) {
+    var d = ENV[svg.dataset.env], Wd = 248 * d.dur / 6.28, bw = Wd / d.env.length;
+    d.env.forEach(function (v, i) { var h = Math.max(1.5, v * 24); el('rect', { x: (i * bw).toFixed(1), y: (13 - h / 2).toFixed(1), width: Math.max(1, bw - 1).toFixed(1), height: h.toFixed(1), rx: 0.8 }, svg); });
   });
 
-  /* ---------- audio: one clip at a time ---------- */
-  var audio = new Audio(); audio.preload = 'none'; var cur = null;
-  function reset() { if (cur) { cur.classList.remove('on'); cur.textContent = '▶'; } cur = null; }
+  /* ---------- audio: one clip at a time; diagram clips show progress on their waveform ---------- */
+  var audio = new Audio(); audio.preload = 'none'; var cur = null, raf = 0;
+  function bars(b) { var w = b.dataset.wave && document.querySelector('svg.xd-wave[data-env="' + b.dataset.wave + '"]'); return w ? w.querySelectorAll('rect') : []; }
+  function paint(b, frac) { var r = bars(b), n = r.length; for (var i = 0; i < n; i++) r[i].classList.toggle('p', (i + 0.5) / n <= frac); }
+  function tick() { if (!cur) return; if (audio.duration) paint(cur, audio.currentTime / audio.duration); raf = requestAnimationFrame(tick); }
+  function reset() {
+    cancelAnimationFrame(raf);
+    if (cur) { cur.classList.remove('on'); cur.textContent = '▶'; cur.setAttribute('aria-label', cur.getAttribute('aria-label').replace(/^Pause/, 'Play')); paint(cur, 0); }
+    cur = null;
+  }
   audio.addEventListener('ended', reset);
   document.querySelectorAll('.play').forEach(function (b) {
     b.addEventListener('click', function () {
       if (cur === b) { audio.pause(); reset(); return; }
-      reset(); audio.src = b.dataset.src; audio.play(); cur = b; b.classList.add('on'); b.textContent = '❚❚';
+      reset(); audio.src = b.dataset.src; var pr = audio.play(); if (pr && pr.catch) pr.catch(reset); cur = b; b.classList.add('on'); b.textContent = '❚❚';
+      b.setAttribute('aria-label', b.getAttribute('aria-label').replace(/^Play/, 'Pause'));
+      if (b.dataset.wave) raf = requestAnimationFrame(tick);
     });
   });
 

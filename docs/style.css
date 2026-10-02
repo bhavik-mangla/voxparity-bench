@@ -280,3 +280,57 @@ h1{font:600 clamp(24px,3.3vw,34px)/1.15 var(--serif);margin:0 0 12px;letter-spac
 .mini .var>div{display:flex;flex-wrap:wrap;align-items:baseline;gap:0 10px}
 .mini .var b{display:inline}
 .stats>div:last-child{grid-column:1 / -1}
+
+/* ---- diagram at the top (Oct 2): one content width, playable diagram in the hero ---- */
+.wrap,#leaderboard>.wrap{max-width:1280px}
+.hero{padding-bottom:16px}
+h1{margin-bottom:6px}
+.lede{font:600 clamp(17px,1.9vw,20px)/1.3 var(--serif);color:var(--ink2);margin:0 0 4px;max-width:none}
+.lede-sub{max-width:100ch;margin-bottom:10px}
+.actions{margin-bottom:14px}
+.hero-grid{display:grid;gap:14px}
+@media(min-width:960px){.hero-grid{grid-template-columns:minmax(0,1fr) 340px;gap:28px;align-items:start}}
+.stats>div:first-child{border-top:0}
+@media(min-width:960px){.stats{margin-top:20px}.stats>div:first-child{border-top:1px solid var(--rule)}}
+.xdiag{margin:0;background:var(--surface);border:1px solid var(--rule);border-radius:12px;padding:12px 14px 10px}
+.xd-grid{display:grid;grid-template-columns:minmax(0,.95fr) 32px minmax(0,1.4fr) 22px minmax(0,.85fr);
+  grid-template-rows:auto minmax(60px,auto) minmax(60px,auto);grid-template-areas:"s1 . s2 . s3" "tr fk va a1 ga" "tr fk vb a2 gb";column-gap:0;row-gap:8px;align-items:stretch}
+.xd-step{margin:0;font:600 13px var(--sans);color:var(--ink)}
+.xd-s1{grid-area:s1}.xd-s2{grid-area:s2}.xd-s3{grid-area:s3}
+.xd-box{background:var(--bg);border:1px solid var(--rule);border-radius:10px;padding:7px 10px;min-width:0}
+.xd-box.cue{border-color:var(--accent);border-width:1.5px;background:var(--accent-soft)}
+.xd-k{display:block;font:500 10.5px var(--mono);color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.xd-ab{display:none}
+.xd-tr{grid-area:tr;align-self:center}
+.xd-q{display:block;font:14.5px/1.4 var(--serif);color:var(--ink);margin-top:2px}
+.xd-fork{grid-area:fk;width:100%;height:100%;display:block}
+.xd-fork path{fill:none;stroke:var(--muted);stroke-width:1.4;vector-effect:non-scaling-stroke}
+.xd-va{grid-area:va}.xd-vb{grid-area:vb}.xd-ga{grid-area:ga}.xd-gb{grid-area:gb}
+.xd-var{display:flex;align-items:center;gap:10px;padding:6px 10px}
+.xd-var .play{width:34px;height:34px;font-size:12px}
+.xd-vt{flex:1;min-width:0}
+.xd-vt b{display:block;font-size:13px;font-weight:600;line-height:1.25}
+.xd-wave{display:block;width:100%;height:22px;margin-top:3px}
+.xd-wave rect{fill:var(--muted);opacity:.55}
+.xd-vb .xd-wave rect{fill:var(--accent)}
+.xd-wave rect.p{opacity:1;fill:var(--ink)}
+.xd-vb .xd-wave rect.p{fill:var(--accent);opacity:1}
+.xd-vb .xd-wave rect:not(.p){opacity:.4}
+.xd-arr{align-self:center;justify-self:center;color:var(--muted);font-size:15px}
+.xd-a1{grid-area:a1}.xd-a2{grid-area:a2}
+.xd-gold{display:flex;flex-direction:column;justify-content:center}
+.xd-gold code{font:600 13.5px var(--mono);color:var(--ink);overflow-wrap:anywhere}
+.xd-gold.cue code{color:var(--accent)}
+.xdiag .res{font-size:13.5px;line-height:1.45;margin:10px 0 2px;color:var(--ink2)}
+.xdiag .res b{color:var(--ink);font-weight:600}
+.xdiag .more{white-space:nowrap}
+.xdiag figcaption{font-size:12px;color:var(--muted)}
+@media(max-width:700px){
+  .xd-grid{grid-template-columns:minmax(0,1fr);grid-template-rows:none;row-gap:6px;
+    grid-template-areas:"s1" "tr" "s2" "va" "vb" "s3" "ga" "gb"}
+  .xd-fork,.xd-arr{display:none}
+  .xd-s2,.xd-s3{margin-top:6px}
+  .xd-var{min-height:56px}
+  .xd-ab{display:inline}
+  .xd-gold{flex-direction:row;justify-content:flex-start;align-items:baseline;gap:10px}
+}
