@@ -56,15 +56,25 @@ def test_page_assets_and_captions() -> None:
     assert page.count(f'content="{lb.OG_IMAGE}"') == 2
     assert "huggingface.co/spaces/bhavikmangla/voxparity-leaderboard" in page
     caps = lb.pair_captions(lb.pair_counts(ROOT))
-    assert set(caps) == {"HERO_FRDCB"} | {
-        f"PAIR_{k}" for k in ("REFILL", "CARSVC", "BNKGR", "DRIVE", "ALARMC", "BETPHN", "SEELON")
-    }
+    names = ("FRDCB", "REFILL", "CARSVC", "BNKGR", "DRIVE", "ALARMC", "BETPHN", "SEELON")
+    assert set(caps) == {f"PAIR_{k}" for k in names}
     for cap in caps.values():
         assert page.count(cap) == 1
-    # Every playable clip appears once, each has provenance, and the removed pair is gone.
+    assert caps["PAIR_FRDCB"].startswith("Of the 28 systems, 24 release the deposit")
+    assert "13 still release it and 9 hold it" in caps["PAIR_FRDCB"]
+    # Eight cards, the credit-union pair first; the hero diagram carries no result line.
+    items = re.findall(r'<article class="pair" data-item="([^"]+)"', page)
+    assert items == list(lb.PAIR_ITEMS)
+    hero = page[page.index('<figure class="xdiag"') : page.index("</figure>")]
+    assert 'class="res"' not in hero and 'href="#pairs"' in hero
+    # Credit-union clips play in the hero and on their card; every other clip once.
     srcs = re.findall(r'data-src="audio/([^"]+)"', page)
     sources = json.loads((ROOT / lb.AUDIO_SOURCES).read_text())
-    assert len(srcs) == len(set(srcs)) == 16 and set(srcs) == set(sources)
+    assert len(srcs) == 18 and set(srcs) == set(sources) and len(sources) == 16
+    assert all(srcs.count(s) == (2 if s.startswith("frdcb") else 1) for s in set(srcs))
+    # Findings come before the examples, in the page and in the nav.
+    assert page.index('<section id="findings"') < page.index('<section id="how"')
+    assert page.index('href="#findings"') < page.index('href="#how"')
     assert {s["item"] for s in sources.values()} == set(lb.PAIR_ITEMS)
     assert "wire" not in page
 

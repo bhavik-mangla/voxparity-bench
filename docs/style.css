@@ -463,3 +463,38 @@ td.c-name sup a{font-size:12px}
 @media(max-width:440px){.top nav a:nth-child(n+3){display:none}}
 .nw,.xd-k{white-space:nowrap}
 @media(max-width:700px){.xd-gold code{min-width:0}}
+
+/* ---- layout fixes (Oct 2, final): full-width how-to, aligned tables, notes beside reference rows ---- */
+.howto{max-width:none}
+.howto details p{max-width:80ch}
+#lbTable .note.tnote{max-width:none;margin:0 0 12px}
+/* both leaderboard tables share one column grid, so the audio-only rows line up with the main table */
+@media(min-width:1100px){
+  #lbTable table{table-layout:fixed}
+  #lbTable th{white-space:normal}
+  #lbTable th small{white-space:normal}
+  #lbTable th.c-name{width:20%}
+  #lbTable th.c-vendor{width:11.5%}
+  #lbTable th.c-mode{width:6.5%}
+  #lbTable th.c-credit{width:16%}
+  #lbTable th.c-verdict{width:12%}
+  #lbTable th.c-gain{width:13%}
+  #lbTable th.c-p{width:6%}
+  #lbTable th.c-probe{width:11%}
+  #lbTable th.c-both{width:10%}
+}
+.after-tables{display:grid;gap:8px 48px;margin-top:8px}
+.after-tables .fn{margin:0;max-width:none}
+.after-tables .fn-col{min-width:0}
+.after-tables .refs{min-width:0}
+.after-tables .refs h3{margin-top:0}
+.after-tables .refs dt:first-of-type{margin-top:4px}
+.after-tables .refs dd{max-width:none}
+#refTable th{white-space:normal}
+@media(min-width:960px){
+  .after-tables{grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:start}
+  .after-tables .fn{padding-right:0}
+}
+.fn-h{font:600 19px var(--serif);margin:0 0 4px}
+/* hero: one-line scenario label under the diagram */
+.xdiag figcaption.xd-scn{font-size:14px;line-height:1.5;color:var(--ink2);margin-top:10px;max-width:none}
