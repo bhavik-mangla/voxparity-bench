@@ -94,6 +94,8 @@ def resolve_root(source: str = "auto", data_dir: str | None = None) -> Path:
     """
     if source not in ("auto", "local", "hf"):
         raise DataError(f"unknown data source {source!r}; expected auto, local or hf")
+    if source == "hf" and data_dir:
+        raise DataError("data_dir applies to source 'auto' or 'local', not 'hf'")
     explicit = data_dir or os.environ.get(ENV_DATA_DIR)
     if source in ("auto", "local"):
         if explicit:

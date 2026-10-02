@@ -24,9 +24,9 @@ from inspect_ai.tool import ToolDef
 
 from voxparity.cli import load_item
 from voxparity.harness.final_analysis import headline_row, load_arm, null_floor
-from voxparity.harness.inspect_replay import replay_model
 from voxparity.harness.runner import item_tools, system_prompt
 from voxparity.voxparity_dev.data import DataError, load_split
+from voxparity.voxparity_dev.replay import replay_model
 from voxparity.voxparity_dev.summary import scores_from_logs, summarize
 from voxparity.voxparity_dev.voxparity_dev import (
     _ITEMS,
@@ -166,11 +166,11 @@ def test_replayed_run_reproduces_published_scores(tmp_path: Path, run: str) -> N
     assert out["null_test_gain_cue_bearing"] == row["diff_in_diff_cue_bearing"]
 
 
-def _state(sample: Any, output: ModelOutput) -> TaskState:
+def _state(sample: Any, output: ModelOutput, epoch: int = 1) -> TaskState:
     return TaskState(
         model=ModelName("mockllm/model"),
         sample_id=sample.id,
-        epoch=1,
+        epoch=epoch,
         input=sample.input,
         messages=list(sample.input),
         output=output,
@@ -219,3 +219,26 @@ def test_first_turn_call_offers_the_menu_and_runs_no_tool() -> None:
     assert seen["tool_calls"] == "none"
     assert state.tool_choice == "auto"
     assert seen["tools"] == [t.name for t in item_tools(item)]
+
+
+def test_more_than_one_epoch_is_refused() -> None:
+    _ITEMS.update(ITEMS)
+    sample = build_samples(ITEMS, CELLS, "audio")[0]
+    state = _state(sample, ModelOutput.from_content("m", ""), epoch=2)
+
+    async def generate(state: TaskState, **kw: Any) -> TaskState:
+        raise AssertionError("must not generate")
+
+    with pytest.raises(ValueError, match="single epoch"):
+        asyncio.run(first_turn_call()(state, generate))  # type: ignore[arg-type]
+
+
+def test_prompt_experiment_env_is_refused(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("VOXPARITY_PROMPT_CONDITION", "listen")
+    with pytest.raises(ValueError, match="frozen"):
+        voxparity_dev()
+
+
+def test_data_dir_with_hf_source_is_refused(tmp_path: Path) -> None:
+    with pytest.raises(DataError, match="not 'hf'"):
+        load_split("hf", str(tmp_path))
