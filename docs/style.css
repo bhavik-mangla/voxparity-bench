@@ -233,3 +233,50 @@ td .v{font-weight:600}
 
 .stats>div:last-child{grid-column:1/-1}
 @media(min-width:820px){.stats>div:last-child{grid-column:auto}}
+
+/* ---- compact top (Oct 2): smaller hero, stat list, playable pair beside it ---- */
+.hero{padding:22px 16px 18px}
+@media(min-width:720px){.hero{padding:26px 32px 18px}}
+h1{font:600 clamp(24px,3.3vw,34px)/1.15 var(--serif);margin:0 0 12px;letter-spacing:-.01em;max-width:none}
+.hero-grid{display:grid;gap:16px}
+@media(min-width:880px){.hero-grid{grid-template-columns:minmax(0,1fr) 400px;gap:28px;align-items:start}}
+.lede{font-size:17px;line-height:1.45;color:var(--ink);max-width:60ch;margin:0 0 4px}
+.lede-sub{font-size:14px;line-height:1.5;color:var(--ink2);max-width:66ch;margin:0 0 12px}
+.actions{gap:8px;margin-bottom:14px}
+.btn{padding:4px 12px;font-size:13.5px}
+.stats{display:block;background:none;border:0;border-radius:0;overflow:visible}
+.stats>div{display:grid;grid-template-columns:96px minmax(0,1fr);column-gap:12px;align-items:baseline;background:none;padding:7px 0;border-top:1px solid var(--rule)}
+.stats>div:last-child{border-bottom:1px solid var(--rule)}
+.stats>div.hi{background:none}
+.stats dd{grid-column:1;grid-row:1 / span 2;margin:0;font:600 24px/1.15 var(--serif);white-space:nowrap}
+.stats dd small{font-size:15px}
+.stats dt{grid-column:2;grid-row:1;margin:0;font-size:14px;line-height:1.35;color:var(--ink);font-weight:500}
+.stats>div>span{grid-column:2;grid-row:2;font-size:12.5px;line-height:1.35;color:var(--muted)}
+.meta{font-size:12.5px;margin:12px 0 0}
+.mini{background:var(--surface);border:1px solid var(--rule);border-radius:12px;padding:12px 14px}
+.mini-k{font:600 12px var(--sans);text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:0 0 6px}
+.mini .t{font:15px/1.4 var(--serif);margin:0 0 8px}
+.mini .var{padding:6px 10px;margin-bottom:6px;gap:10px}
+.mini .var b{font-size:13.5px}
+.mini .var code{font-size:12.5px}
+.mini .play{width:32px;height:32px;font-size:12px}
+.mini .res{font-size:13px;line-height:1.45;margin:8px 0 4px}
+.mini .res b{color:var(--ink);font-weight:600}
+.more{font-size:13px;text-decoration:none}
+.more:hover{text-decoration:underline}
+.pairs-k{color:var(--ink2);font-size:14px;margin:0 0 10px}
+@media(min-width:820px){.pairs>.pair:last-child:nth-child(odd){grid-column:1/-1}}
+#leaderboard{padding-top:26px}
+#leaderboard h2{font-size:clamp(21px,2.4vw,26px);margin-bottom:8px}
+.howto{padding:8px 12px;margin:0 0 12px;border-radius:8px}
+.howto p{font-size:14px}
+.howto .pass-word{color:var(--accent)}
+.howto details{margin-top:2px}
+.howto summary{cursor:pointer;font-size:13px;color:var(--accent);width:max-content;max-width:100%}
+.howto details p{margin-top:6px;font-size:13.5px}
+@media(max-width:640px){.stats dd{font-size:22px}}
+.stats{display:grid;grid-template-columns:max-content minmax(0,1fr);column-gap:14px}
+.stats>div{grid-column:1 / -1;grid-template-columns:subgrid;column-gap:14px}
+.mini .var>div{display:flex;flex-wrap:wrap;align-items:baseline;gap:0 10px}
+.mini .var b{display:inline}
+.stats>div:last-child{grid-column:1 / -1}
