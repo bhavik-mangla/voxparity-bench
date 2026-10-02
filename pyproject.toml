@@ -22,10 +22,6 @@ dependencies = [
   "python-dotenv>=1.0",
   "websockets>=13",
   "numpy>=2.2.6",
-  "inspect-ai>=0.3.275",
-  # Inspect's openai, openrouter and openai-compatible model providers need the SDK,
-  # so the register's plain `uv sync` can run the task on real models.
-  "openai>=3.1.0",
 ]
 
 [project.optional-dependencies]
@@ -48,6 +44,14 @@ local = [
     # misaki's English G2P loads this spaCy model at runtime; declared here so
     # `uv sync` doesn't strip it (URL wheel, not on PyPI)
     "en-core-web-sm @ https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.8.0/en_core_web_sm-3.8.0-py3-none-any.whl ; sys_platform == 'darwin' and platform_machine == 'arm64'",
+]
+
+inspect = [
+    # The Inspect AI task for the public dev split (`voxparity_dev`):
+    # `uv sync --extra inspect`. openai is the SDK behind Inspect's openai,
+    # openrouter and openai-compatible model providers.
+    "inspect-ai>=0.3.275",
+    "openai>=3.1.0",
 ]
 
 paper = [
@@ -110,6 +114,12 @@ no_implicit_optional = true
 # 3.12-only syntax that mypy's 3.11 target cannot parse.
 module = ["funasr", "funasr.*", "librosa", "librosa.*", "torch", "torch.*"]
 follow_imports = "skip"
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+# `inspect` extra: typed and installed in CI; a checkout without the extra must
+# still type-check the rest of the package.
+module = ["inspect_ai", "inspect_ai.*"]
 ignore_missing_imports = true
 
 [[tool.mypy.overrides]]

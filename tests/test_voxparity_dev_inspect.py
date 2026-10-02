@@ -13,6 +13,9 @@ from pathlib import Path
 from typing import Any
 
 import pytest
+
+pytest.importorskip("inspect_ai", reason="needs the `inspect` extra")
+
 from inspect_ai import eval as inspect_eval
 from inspect_ai.model import ModelName, ModelOutput
 from inspect_ai.scorer import SampleScore, Score, Target

@@ -4267,9 +4267,7 @@ version = "1.0.1"
 source = { editable = "." }
 dependencies = [
     { name = "httpx" },
-    { name = "inspect-ai" },
     { name = "numpy" },
-    { name = "openai" },
     { name = "pydantic" },
     { name = "python-dotenv" },
     { name = "pyyaml" },
@@ -4287,6 +4285,10 @@ dev = [
 ]
 duplex = [
     { name = "moshi-mlx", marker = "platform_machine == 'arm64' and sys_platform == 'darwin'" },
+]
+inspect = [
+    { name = "inspect-ai" },
+    { name = "openai" },
 ]
 local = [
     { name = "en-core-web-sm", marker = "platform_machine == 'arm64' and sys_platform == 'darwin'" },
@@ -4310,7 +4312,7 @@ requires-dist = [
     { name = "funasr", marker = "extra == 'ser'", specifier = ">=1.2.0" },
     { name = "httpx", specifier = ">=0.27" },
     { name = "huggingface-hub", marker = "extra == 'local'", specifier = ">=0.28.1" },
-    { name = "inspect-ai", specifier = ">=0.3.275" },
+    { name = "inspect-ai", marker = "extra == 'inspect'", specifier = ">=0.3.275" },
     { name = "loguru", marker = "platform_machine == 'arm64' and sys_platform == 'darwin' and extra == 'local'", specifier = ">=0.7" },
     { name = "matplotlib", marker = "extra == 'paper'", specifier = ">=3.9" },
     { name = "misaki", extras = ["en"], marker = "platform_machine == 'arm64' and sys_platform == 'darwin' and extra == 'local'", specifier = ">=0.8" },
@@ -4318,7 +4320,7 @@ requires-dist = [
     { name = "moshi-mlx", marker = "platform_machine == 'arm64' and sys_platform == 'darwin' and extra == 'duplex'", specifier = ">=0.3.0" },
     { name = "mypy", marker = "extra == 'dev'", specifier = ">=1.10" },
     { name = "numpy", specifier = ">=2.2.6" },
-    { name = "openai", specifier = ">=3.1.0" },
+    { name = "openai", marker = "extra == 'inspect'", specifier = ">=3.1.0" },
     { name = "pre-commit", marker = "extra == 'dev'", specifier = ">=3.7" },
     { name = "pydantic", specifier = ">=2.7" },
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=8.0" },
@@ -4331,7 +4333,7 @@ requires-dist = [
     { name = "types-pyyaml", marker = "extra == 'dev'" },
     { name = "websockets", specifier = ">=13" },
 ]
-provides-extras = ["dev", "local", "paper", "ser", "duplex"]
+provides-extras = ["dev", "local", "inspect", "paper", "ser", "duplex"]
 
 [[package]]
 name = "wasabi"

@@ -14,7 +14,7 @@ jobs:
       - name: Sync
         # Not --all-extras: `local` (mlx-audio>=0.5.3) and `duplex` (moshi-mlx)
         # are declared uv conflicts and cannot share one environment.
-        run: uv sync --extra dev --extra local --extra paper
+        run: uv sync --extra dev --extra local --extra paper --extra inspect
       - name: Lint
         run: uv run ruff check . && uv run ruff format --check .
       - name: Types
