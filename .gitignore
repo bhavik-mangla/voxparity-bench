@@ -57,3 +57,6 @@ freeze/*/run-*/
 # Outreach social cards and crops: generated locally by docs/outreach/img/make_cards.py
 # (and ffmpeg); never committed.
 docs/outreach/img/*.png
+
+# Inspect AI eval logs (inspect eval --log-dir logs)
+logs/
